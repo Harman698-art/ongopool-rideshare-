@@ -61,7 +61,7 @@ class OnGoPoolMobileApp {
     }
 
     setupFileUploads() {
-        // Setup license file upload
+        // Setup license file upload with OCR simulation
         const licenseUploadArea = document.getElementById('license-upload');
         const licenseFileInput = document.getElementById('license-file');
         
@@ -71,7 +71,7 @@ class OnGoPoolMobileApp {
             });
             
             licenseFileInput.addEventListener('change', (e) => {
-                this.handleFileUpload(e, 'license');
+                this.handleLicenseUpload(e);
             });
         }
         
@@ -1271,6 +1271,158 @@ class OnGoPoolMobileApp {
                 }
             });
         }
+    }
+
+    handleLicenseUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // Validate file type and size
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+            this.showToast('Please upload JPG or PNG image files only', 'error');
+            return;
+        }
+        
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            this.showToast('File size must be less than 5MB', 'error');
+            return;
+        }
+        
+        // Show scanning animation
+        this.showLicenseScanning();
+        
+        // Simulate OCR processing with realistic delay
+        setTimeout(() => {
+            this.processLicenseImage(file);
+        }, 2000);
+    }
+
+    showLicenseScanning() {
+        const uploadArea = document.getElementById('license-upload');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="scanning-animation">
+                    <div class="scan-line"></div>
+                    <i class="fas fa-eye scan-icon"></i>
+                    <p>Scanning license...</p>
+                    <div class="scan-progress">
+                        <div class="scan-progress-bar"></div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    processLicenseImage(file) {
+        // Create a FileReader to process the image
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            // Simulate OCR text extraction based on image analysis
+            const extractedData = this.simulateOCRExtraction(file.name);
+            
+            // Auto-populate form fields
+            this.populateLicenseData(extractedData);
+            
+            // Show success state
+            this.showLicenseSuccess(file, extractedData);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    simulateOCRExtraction(filename) {
+        // Simulate different license patterns based on filename or random selection
+        const licensePatterns = [
+            {
+                number: 'D1234-56789-12345',
+                expiry: '2028-03-15',
+                class: 'G',
+                province: 'Ontario'
+            },
+            {
+                number: 'L9876-54321-98765',
+                expiry: '2027-08-22',
+                class: 'G2',
+                province: 'Ontario'
+            },
+            {
+                number: 'M5555-44444-33333',
+                expiry: '2029-12-10',
+                class: 'G',
+                province: 'Quebec'
+            }
+        ];
+        
+        // Select pattern based on filename hash or random
+        const patternIndex = Math.abs(filename.split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0)) % licensePatterns.length;
+        
+        return licensePatterns[patternIndex];
+    }
+
+    populateLicenseData(data) {
+        // Auto-populate form fields with extracted data
+        const licenseNumber = document.getElementById('license-number');
+        const licenseExpiry = document.getElementById('license-expiry');
+        const licenseClass = document.getElementById('license-class');
+        const licenseProvince = document.getElementById('license-province');
+        
+        if (licenseNumber) licenseNumber.value = data.number;
+        if (licenseExpiry) licenseExpiry.value = data.expiry;
+        if (licenseClass) licenseClass.value = data.class;
+        if (licenseProvince) licenseProvince.value = data.province;
+        
+        // Show success message
+        this.showToast('License information extracted successfully!', 'success');
+    }
+
+    showLicenseSuccess(file, extractedData) {
+        const uploadArea = document.getElementById('license-upload');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="upload-success">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <div class="extracted-info">
+                        <h5>License Scanned Successfully</h5>
+                        <div class="extracted-details">
+                            <p><strong>License #:</strong> ${extractedData.number}</p>
+                            <p><strong>Expires:</strong> ${new Date(extractedData.expiry).toLocaleDateString()}</p>
+                            <p><strong>Class:</strong> ${extractedData.class}</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-rescan" onclick="app.resetLicenseUpload()">
+                        <i class="fas fa-redo"></i> Scan Again
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    resetLicenseUpload() {
+        const uploadArea = document.getElementById('license-upload');
+        const fileInput = document.getElementById('license-file');
+        
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="upload-placeholder">
+                    <i class="fas fa-camera"></i>
+                    <p>Tap to upload license photo</p>
+                    <small>JPG, PNG up to 5MB</small>
+                </div>
+            `;
+        }
+        
+        if (fileInput) {
+            fileInput.value = '';
+        }
+        
+        // Clear form fields
+        ['license-number', 'license-expiry', 'license-class', 'license-province'].forEach(id => {
+            const field = document.getElementById(id);
+            if (field) field.value = '';
+        });
     }
 
     handleVerificationFileUpload(event, uploadArea) {
