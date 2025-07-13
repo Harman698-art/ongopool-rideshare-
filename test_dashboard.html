@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Test Dashboard - OnGoPool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/new-pages-styles.css">
+    <style>
+        .test-panel {
+            padding: 20px;
+            margin: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            margin: 10px 0;
+            padding: 12px 20px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body class="mobile-app">
+    <div class="status-bar-spacer"></div>
+    <div id="app" class="mobile-container">
+        <div class="mobile-screen">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="user-greeting">
+                    <div class="user-avatar driver">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="greeting-text">
+                        <span class="greeting">Testing Environment</span>
+                        <span class="user-name" id="driver-name">Driver Dashboard</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-notification">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="btn-profile">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="test-panel">
+                <h2>Notification Testing</h2>
+                <p>The notification bell icon above has been fixed to be clickable. Click on it to see a notification toast.</p>
+                <p>This page simulates the driver dashboard with the notification button.</p>
+                
+                <h3>Test Controls</h3>
+                <button class="test-button" id="test-notification">Send Mock Notification</button>
+                <button class="test-button" id="goto-index">Go to Main App</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Simulate logged in user
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = {
+                id: Date.now(),
+                email: 'sarah@example.com',
+                name: 'Sarah Driver',
+                role: 'driver',
+                phone: '+1234567890'
+            };
+            
+            localStorage.setItem('ongopool_user', JSON.stringify(userData));
+            localStorage.setItem('ongopool_auth_timestamp', Date.now().toString());
+            
+            // Setup test buttons
+            document.getElementById('test-notification').addEventListener('click', () => {
+                if (window.notificationService) {
+                    window.notificationService.sendNotification('RIDE_REQUEST', {
+                        body: 'New ride request from John Doe',
+                        data: { type: 'ride_request', rideId: 'test-ride-1' }
+                    });
+                } else {
+                    alert('Notification service not initialized');
+                }
+            });
+            
+            document.getElementById('goto-index').addEventListener('click', () => {
+                // Set up a logged in driver user and go to offer ride page
+                const userData = {
+                    id: Date.now(),
+                    email: 'sarah@example.com',
+                    name: 'Sarah Driver',
+                    role: 'driver',
+                    phone: '+1234567890'
+                };
+                localStorage.setItem('ongopool_user', JSON.stringify(userData));
+                localStorage.setItem('ongopool_auth_timestamp', Date.now().toString());
+                window.location.href = 'index.html#offer-ride';
+            });
+        });
+    </script>
+</body>
+</html>

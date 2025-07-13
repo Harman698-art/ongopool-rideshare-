@@ -1,0 +1,3584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>OnGoPool - Rideshare App</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Affordable rideshare platform connecting drivers and passengers across Canada">
+    <meta name="theme-color" content="#10b981">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="OnGoPool">
+    
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" href="icons/icon-152x152.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="css/styles.css?v=1704951659">
+    <link rel="stylesheet" href="css/new-pages-styles.css">
+    <link rel="stylesheet" href="css/admin-styles.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="mobile-app">
+    <!-- Status Bar Spacer for iOS -->
+    <div class="status-bar-spacer"></div>
+
+    <!-- Main App Container -->
+    <div id="app" class="mobile-container">
+        
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="page">
+            <div class="mobile-splash">
+                <div class="splash-content">
+                    <div class="app-logo">
+                        <div class="logo-circle">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h1 class="app-name">OnGoPool</h1>
+                        <p class="app-tagline">Ride Together, Save Together</p>
+                    </div>
+                    
+                    <div class="splash-illustration">
+                        <div class="car-animation">
+                            <i class="fas fa-car-side"></i>
+                        </div>
+                        <div class="road-line"></div>
+                    </div>
+                </div>
+                
+                <div class="splash-footer">
+                    <button onclick="showPage('onboarding')" class="btn-start">
+                        <span>Get Started</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <p class="version-text">Version 1.0.0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onboarding/Welcome Screen -->
+        <div id="onboarding-page" class="page">
+            <div class="mobile-screen">
+                <div class="onboarding-header">
+                    <div class="logo-small">
+                        <i class="fas fa-car"></i>
+                        <span>OnGoPool</span>
+                    </div>
+                </div>
+                
+                <div class="onboarding-content">
+                    <h2>Welcome to OnGoPool</h2>
+                    <p>Connect with fellow travelers, share rides, and save money on your daily commute.</p>
+                    
+                    <div class="feature-highlights">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Safe & Verified</h4>
+                                <p>All drivers verified</p>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Affordable</h4>
+                                <p>Save up to 50%</p>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Real-time</h4>
+                                <p>Live tracking</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PWA Install Buttons -->
+                <div class="install-section">
+                    <div class="install-text">
+                        <h3>Install OnGoPool</h3>
+                        <p>Get the full app experience with offline access and notifications</p>
+                    </div>
+                    <div class="install-buttons">
+                        <button id="pwa-install-btn" class="btn-install" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            <span>Install App</span>
+                        </button>
+                        <button id="ios-install-btn" class="btn-install ios-only" style="display: none;">
+                            <i class="fab fa-apple"></i>
+                            <span>Add to Home Screen</span>
+                        </button>
+                        <button id="android-install-btn" class="btn-install android-only" style="display: none;">
+                            <i class="fab fa-android"></i>
+                            <span>Install App</span>
+                        </button>
+                    </div>
+                    <div id="install-instructions" class="install-instructions" style="display: none;">
+                        <div class="instruction-steps">
+                            <p class="instruction-title">To install on your device:</p>
+                            <div class="ios-instructions" style="display: none;">
+                                <p>1. Tap the Share button <i class="fas fa-share"></i></p>
+                                <p>2. Select "Add to Home Screen"</p>
+                                <p>3. Tap "Add" to install</p>
+                            </div>
+                            <div class="android-instructions" style="display: none;">
+                                <p>1. Tap the menu button ⋮</p>
+                                <p>2. Select "Add to Home Screen" or "Install App"</p>
+                                <p>3. Tap "Add" to install</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="onboarding-actions">
+                    <button onclick="showPage('signup')" class="btn-primary">
+                        Create Account
+                    </button>
+                    <button onclick="showPage('login')" class="btn-secondary">
+                        Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="login-page" class="page">
+            <div class="mobile-screen">
+                <div class="auth-header">
+                    <button onclick="showPage('onboarding')" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Sign In</h2>
+                </div>
+                
+                <div class="auth-content">
+                    <form id="login-form" class="mobile-form">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" name="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" name="password" placeholder="Enter your password" required>
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            Sign In
+                        </button>
+                    </form>
+                    
+                    <div class="auth-links">
+                        <a href="#" onclick="showPage('forgot-password')">Forgot Password?</a>
+                    </div>
+                    
+                    <div class="auth-divider">
+                        <span>Don't have an account?</span>
+                    </div>
+                    
+                    <button onclick="showPage('signup')" class="btn-link">
+                        Create Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signup Screen -->
+        <div id="signup-page" class="page">
+            <div class="mobile-screen">
+                <div class="auth-header">
+                    <button onclick="showPage('onboarding')" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Create Account</h2>
+                </div>
+                
+                <div class="auth-content">
+                    <form id="signup-form" class="mobile-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" name="name" placeholder="Enter your full name" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" name="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" name="phone" placeholder="Enter your phone number" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" name="password" placeholder="Create a password" required>
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>I want to</label>
+                            <div class="role-selector">
+                                <label class="role-option">
+                                    <input type="radio" name="role" value="passenger" checked>
+                                    <div class="role-card">
+                                        <i class="fas fa-user"></i>
+                                        <span>Find Rides</span>
+                                        <small>Book rides from drivers</small>
+                                    </div>
+                                </label>
+                                
+                                <label class="role-option">
+                                    <input type="radio" name="role" value="driver">
+                                    <div class="role-card">
+                                        <i class="fas fa-car"></i>
+                                        <span>Drive & Earn</span>
+                                        <small>Offer rides to passengers</small>
+                                    </div>
+                                </label>
+                                
+                                <label class="role-option">
+                                    <input type="radio" name="role" value="both">
+                                    <div class="role-card">
+                                        <i class="fas fa-users"></i>
+                                        <span>Both</span>
+                                        <small>Drive and find rides</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" required>
+                                <span class="checkmark"></span>
+                                I agree to <a href="#" onclick="showPage('terms')">Terms</a> and <a href="#" onclick="showPage('privacy')">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            Create Account
+                        </button>
+                    </form>
+                    
+                    <div class="auth-divider">
+                        <span>Already have an account?</span>
+                    </div>
+                    
+                    <button onclick="showPage('login')" class="btn-link">
+                        Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Verification Screen -->
+        <div id="email-verification-page" class="page">
+            <div class="mobile-screen">
+                <div class="auth-container">
+                    <div class="auth-header">
+                        <button onclick="showPage('login')" class="btn-back">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <h2>Check Your Email</h2>
+                    </div>
+                    
+                    <div class="verification-content">
+                        <div class="verification-icon">
+                            <i class="fas fa-envelope-open"></i>
+                        </div>
+                        
+                        <h3>Verification Email Sent!</h3>
+                        <p>We've sent a verification link to your email address. Please check your inbox and click the link to activate your account.</p>
+                        
+                        <div class="verification-tips">
+                            <h4>Didn't receive the email?</h4>
+                            <ul>
+                                <li>Check your spam/junk folder</li>
+                                <li>Make sure you entered the correct email address</li>
+                                <li>Wait a few minutes for the email to arrive</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="verification-actions">
+                            <button id="resend-verification-btn" onclick="resendVerificationEmail()" class="btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                                Resend Verification Email
+                            </button>
+                            
+                            <button onclick="showPage('login')" class="btn-secondary">
+                                Back to Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Passenger Dashboard -->
+        <div id="passenger-dashboard-page" class="page">
+            <div class="mobile-screen">
+                <!-- Header -->
+                <div class="dashboard-header">
+                    <div class="user-greeting">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="greeting-text">
+                            <span class="greeting">Good morning</span>
+                            <span class="user-name" id="passenger-name">John</span>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button id="dashboard-install-btn" class="btn-install-header" onclick="window.pwaService?.showInstallOptions()" style="display: none;" title="Install App">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn-notification">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">2</span>
+                        </button>
+                        <button onclick="showPage('profile')" class="btn-profile">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-road"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number">12</span>
+                            <span class="stat-label">Rides Taken</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number">$420</span>
+                            <span class="stat-label">Money Saved</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Actions -->
+                <div class="action-cards">
+                    <div class="action-card primary" onclick="showPage('find-rides')">
+                        <div class="action-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>Find a Ride</h3>
+                            <p>Search for available rides</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="showPage('my-rides')">
+                        <div class="action-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>My Rides</h3>
+                            <p>View upcoming and past rides</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Rides -->
+                <div class="section-header">
+                    <h3>Upcoming Rides</h3>
+                    <button onclick="showPage('my-rides')" class="btn-see-all">See All</button>
+                </div>
+                
+                <div id="upcoming-rides-list" class="rides-list">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+
+                <!-- Bottom Navigation -->
+                <div class="bottom-nav passenger-nav">
+                    <button class="nav-item active" onclick="showPage('passenger-dashboard')">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </button>
+                    <button class="nav-item" onclick="showPage('find-rides')">
+                        <i class="fas fa-search"></i>
+                        <span>Find</span>
+                    </button>
+                    <button class="nav-item" onclick="showPage('my-rides')">
+                        <i class="fas fa-car"></i>
+                        <span>Rides</span>
+                    </button>
+                    <button class="nav-item" onclick="showPage('profile')">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Driver Dashboard -->
+        <div id="driver-dashboard-page" class="page">
+            <div class="mobile-screen">
+                <!-- Header -->
+                <div class="dashboard-header">
+                    <div class="user-greeting">
+                        <div class="user-avatar driver">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="greeting-text">
+                            <span class="greeting">Ready to drive</span>
+                            <span class="user-name" id="driver-name">Sarah</span>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button id="driver-dashboard-install-btn" class="btn-install-header" onclick="window.pwaService?.showInstallOptions()" style="display: none;" title="Install App">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn-notification">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">1</span>
+                        </button>
+                        <button onclick="showPage('profile')" class="btn-profile">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Driver Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number">4.9</span>
+                            <span class="stat-label">Rating</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number">$1,240</span>
+                            <span class="stat-label">This Month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-road"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number">24</span>
+                            <span class="stat-label">Trips</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driver Verification Status -->
+                <div id="driver-verification-banner" class="verification-banner">
+                    <div class="verification-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="verification-content">
+                        <h4>Complete Your Driver Verification</h4>
+                        <p>Upload your license to start earning</p>
+                    </div>
+                    <button onclick="showPage('driver-verification')" class="btn-verify">
+                        Verify Now
+                    </button>
+                </div>
+
+                <!-- Driver Actions -->
+                <div class="action-cards">
+                    <div class="action-card primary" onclick="showPage('offer-ride')">
+                        <div class="action-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>Offer a Ride</h3>
+                            <p>Post a new ride</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="showPage('my-rides')">
+                        <div class="action-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>My Rides</h3>
+                            <p>Manage your rides</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="showPage('earnings')">
+                        <div class="action-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>Earnings</h3>
+                            <p>View your earnings</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="showPage('driver-verification')">
+                        <div class="action-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>Driver Verification</h3>
+                            <p>Complete verification</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Rides -->
+                <div class="section-header">
+                    <h3>Active Rides</h3>
+                    <button onclick="showPage('my-rides')" class="btn-see-all">See All</button>
+                </div>
+                
+                <div id="active-rides-list" class="rides-list">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+
+                <!-- Bottom Navigation -->
+                <div class="bottom-nav driver-nav">
+                    <button class="nav-item active" onclick="showPage('driver-dashboard')">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </button>
+                    <button class="nav-item" onclick="showPage('offer-ride')">
+                        <i class="fas fa-plus"></i>
+                        <span>Offer</span>
+                    </button>
+                    <button class="nav-item" onclick="showPage('my-rides')">
+                        <i class="fas fa-car"></i>
+                        <span>Rides</span>
+                    </button>
+                    <button class="nav-item" onclick="showPage('earnings')">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Earnings</span>
+                    </button>
+                    <button class="nav-item" onclick="showPage('profile')">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Find Rides Screen -->
+        <div id="find-rides-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="goToDashboard()" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Find Rides</h2>
+                </div>
+                
+                <div class="search-form">
+                    <div class="location-inputs">
+                        <div class="input-group">
+                            <div class="location-icon from">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <input type="text" placeholder="Enter full pickup address" id="pickup-input" class="location-autocomplete" autocomplete="off">
+                            <div class="autocomplete-suggestions" id="pickup-suggestions"></div>
+                        </div>
+                        
+                        <div class="location-swap">
+                            <button type="button">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="input-group">
+                            <div class="location-icon to">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <input type="text" placeholder="Enter full destination address" id="destination-input" class="location-autocomplete" autocomplete="off">
+                            <div class="autocomplete-suggestions" id="destination-suggestions"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="trip-details">
+                        <div class="detail-item">
+                            <label>Date</label>
+                            <input type="date" id="travel-date">
+                        </div>
+                        
+                        <div class="detail-item">
+                            <label>Time</label>
+                            <input type="time" id="travel-time">
+                        </div>
+                        
+                        <div class="detail-item">
+                            <label>Passengers</label>
+                            <select id="passenger-count">
+                                <option value="1">1 passenger</option>
+                                <option value="2">2 passengers</option>
+                                <option value="3">3 passengers</option>
+                                <option value="4">4 passengers</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="estimate-section">
+                        <button type="button" onclick="estimatePrice()" class="btn-estimate" id="estimate-btn">
+                            <i class="fas fa-calculator"></i>
+                            Estimate Price
+                        </button>
+                        <div class="price-estimate" id="price-estimate" style="display: none;">
+                            <div class="estimate-result">
+                                <span class="estimate-label">Estimated cost:</span>
+                                <span class="estimate-price" id="estimate-price">$--</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" onclick="searchRides()" class="btn-search">
+                        <i class="fas fa-search"></i>
+                        Search Rides
+                    </button>
+                </div>
+                
+                <div id="search-results" class="search-results">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Offer Ride Screen -->
+        <div id="offer-ride-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="goToDashboard()" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Offer a Ride</h2>
+                </div>
+                
+                <div class="offer-ride-form">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Route Information</h3>
+                        
+                        <div class="location-inputs">
+                            <div class="input-group">
+                                <div class="location-icon from">
+                                    <i class="fas fa-circle"></i>
+                                </div>
+                                <input type="text" placeholder="Enter full pickup address" id="driver-pickup-input" class="location-autocomplete" autocomplete="off">
+                                <div class="autocomplete-suggestions" id="driver-pickup-suggestions"></div>
+                            </div>
+                            
+                            <div class="location-swap">
+                                <button type="button">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="input-group">
+                                <div class="location-icon to">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <input type="text" placeholder="Enter full destination address" id="driver-destination-input" class="location-autocomplete" autocomplete="off">
+                                <div class="autocomplete-suggestions" id="driver-destination-suggestions"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stops Section -->
+                        <div class="stops-section">
+                            <div class="stops-header">
+                                <h4>Add Stops <span class="optional-label">(Optional)</span></h4>
+                                <p class="stops-description">Add intermediate stops for passenger pick-up and drop-off</p>
+                            </div>
+                            <div id="stops-container" class="stops-container">
+                                <!-- Stops will be added dynamically -->
+                            </div>
+                            <button type="button" class="btn-add-stop" id="add-stop-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Stop
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="form-section-title">Trip Details</h3>
+                        
+                        <div class="trip-details">
+                            <div class="detail-item">
+                                <label>Date</label>
+                                <input type="date" id="driver-travel-date">
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Time</label>
+                                <div class="time-selector">
+                                    <select id="driver-travel-hour">
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9" selected>9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <span>:</span>
+                                    <select id="driver-travel-minute">
+                                        <option value="00" selected>00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                    <select id="driver-travel-ampm">
+                                        <option value="AM" selected>AM</option>
+                                        <option value="PM">PM</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Available Seats</label>
+                                <select id="available-seats">
+                                    <option value="1">1 seat</option>
+                                    <option value="2">2 seats</option>
+                                    <option value="3">3 seats</option>
+                                    <option value="4">4 seats</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="form-section-title">Route & Pricing</h3>
+                        
+                        <div class="route-info" id="route-info" style="display: none;">
+                            <div class="route-summary">
+                                <div class="route-detail">
+                                    <i class="fas fa-route"></i>
+                                    <span id="route-distance">-- km</span>
+                                </div>
+                                <div class="route-detail">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="route-duration">-- min</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-inputs">
+                            <button type="button" class="btn-calculate-route" id="calculate-route-btn">
+                                <i class="fas fa-calculator"></i>
+                                Calculate Route & Price
+                            </button>
+                            
+                            <div class="price-slider-container" id="price-slider-container" style="display: none;">
+                                <div class="price-header">
+                                    <label>Price per seat</label>
+                                    <div class="price-display">
+                                        <span class="currency-symbol">$</span>
+                                        <span class="price-value" id="current-price">0.00</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="price-slider">
+                                    <input type="range" id="price-range-slider" min="5" max="50" value="25" step="0.25" class="slider">
+                                    <div class="price-range-labels">
+                                        <span class="min-label" id="min-price-label">$5.00</span>
+                                        <span class="max-label" id="max-price-label">$50.00</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="earnings-breakdown" id="earnings-breakdown">
+                                    <div class="earnings-item">
+                                        <span class="label">Total passenger payment:</span>
+                                        <span class="value" id="total-passenger-payment">$0.00</span>
+                                    </div>
+                                    <div class="earnings-item service-charge">
+                                        <span class="label">Service charge (15%):</span>
+                                        <span class="value" id="service-charge">$0.00</span>
+                                    </div>
+                                    <div class="earnings-item driver-earnings">
+                                        <span class="label">Your earnings:</span>
+                                        <span class="value" id="driver-earnings">$0.00</span>
+                                    </div>
+                                </div>
+                                
+                                <p class="price-note" id="price-breakdown">Price based on distance and available seats</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-primary btn-offer-ride">
+                        <i class="fas fa-plus-circle"></i>
+                        Post Ride
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- License Verification Screen -->
+        <div id="license-verification-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="goToDashboard()" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Driver License Verification</h2>
+                </div>
+                
+                <div class="verification-content">
+                    <div class="verification-intro">
+                        <div class="verification-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h3>Verify Your Driver License</h3>
+                        <p>To ensure safety and compliance, all drivers must verify their license before posting rides. This is a one-time verification process.</p>
+                    </div>
+                    
+                    <form id="license-verification-form" class="verification-form">
+                        <div class="form-group">
+                            <label>License Number</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="license-number" placeholder="Enter your license number" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar"></i>
+                                <input type="date" id="license-expiry" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Province/State</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <select id="license-province" required>
+                                    <option value="">Select Province/State</option>
+                                    <option value="ON">Ontario</option>
+                                    <option value="QC">Quebec</option>
+                                    <option value="BC">British Columbia</option>
+                                    <option value="AB">Alberta</option>
+                                    <option value="MB">Manitoba</option>
+                                    <option value="SK">Saskatchewan</option>
+                                    <option value="NS">Nova Scotia</option>
+                                    <option value="NB">New Brunswick</option>
+                                    <option value="NL">Newfoundland and Labrador</option>
+                                    <option value="PE">Prince Edward Island</option>
+                                    <option value="NT">Northwest Territories</option>
+                                    <option value="NU">Nunavut</option>
+                                    <option value="YT">Yukon</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>License Photo (Front)</label>
+                            <div class="file-upload">
+                                <input type="file" id="license-photo" accept="image/*" required>
+                                <div class="file-upload-area">
+                                    <i class="fas fa-camera"></i>
+                                    <p>Tap to upload photo</p>
+                                    <small>Please ensure the photo is clear and all details are visible</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-divider">
+                            <span>Vehicle Information</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Vehicle Model</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-car"></i>
+                                <input type="text" id="vehicle-model" placeholder="E.g., Toyota Camry, Honda Civic" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Vehicle Color</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-palette"></i>
+                                <input type="text" id="vehicle-color" placeholder="E.g., Silver, Black, White" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>License Plate</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="license-plate" placeholder="Enter your license plate number" required>
+                            </div>
+                        </div>
+                        
+                        <div class="verification-notes">
+                            <div class="note-item">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Verification usually takes 5-10 minutes</span>
+                            </div>
+                            <div class="note-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Your information is securely encrypted</span>
+                            </div>
+                            <div class="note-item">
+                                <i class="fas fa-clock"></i>
+                                <span>One-time verification required</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary btn-verify">
+                            <i class="fas fa-check"></i>
+                            Verify License & Vehicle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Rides Screen -->
+        <div id="my-rides-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="goToDashboard()" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>My Rides</h2>
+                </div>
+                
+                <div class="rides-content">
+                    <!-- Tabs for switching between different ride views -->
+                    <div class="ride-tabs">
+                        <button class="tab-button active" data-tab="upcoming">
+                            <i class="fas fa-clock"></i>
+                            Upcoming
+                        </button>
+                        <button class="tab-button" data-tab="active">
+                            <i class="fas fa-car"></i>
+                            Active
+                        </button>
+                        <button class="tab-button" data-tab="history">
+                            <i class="fas fa-history"></i>
+                            History
+                        </button>
+                    </div>
+                    
+                    <!-- Upcoming Rides Tab -->
+                    <div id="upcoming-tab" class="tab-content active">
+                        <div class="rides-section">
+                            <div class="section-title">
+                                <h3>Upcoming Rides</h3>
+                                <span class="count">2 rides</span>
+                            </div>
+                            <div id="upcoming-rides-container" class="rides-container">
+                                <!-- Will be populated by JavaScript -->
+                                <div class="ride-card upcoming">
+                                    <div class="ride-header">
+                                        <div class="ride-route">
+                                            <span class="from">Toronto</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                            <span class="to">Ottawa</span>
+                                        </div>
+                                        <span class="ride-status booked">Booked</span>
+                                    </div>
+                                    <div class="ride-details">
+                                        <div class="ride-time">
+                                            <i class="fas fa-calendar"></i>
+                                            <span>Tomorrow at 2:30 PM</span>
+                                        </div>
+                                        <div class="ride-driver">
+                                            <i class="fas fa-user"></i>
+                                            <span>Sarah Johnson (4.9★)</span>
+                                        </div>
+                                        <div class="ride-price">
+                                            <i class="fas fa-dollar-sign"></i>
+                                            <span>$45.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="ride-actions">
+                                        <button class="btn-action secondary">
+                                            <i class="fas fa-message"></i>
+                                            Message
+                                        </button>
+                                        <button class="btn-action danger">
+                                            <i class="fas fa-times"></i>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Rides Tab -->
+                    <div id="active-tab" class="tab-content">
+                        <div class="rides-section">
+                            <div class="section-title">
+                                <h3>Active Rides</h3>
+                                <span class="count">1 ride</span>
+                            </div>
+                            <div id="active-rides-container" class="rides-container">
+                                <!-- Will be populated by JavaScript -->
+                                <div class="ride-card active">
+                                    <div class="ride-header">
+                                        <div class="ride-route">
+                                            <span class="from">Toronto</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                            <span class="to">Hamilton</span>
+                                        </div>
+                                        <span class="ride-status in-progress">In Progress</span>
+                                    </div>
+                                    <div class="ride-details">
+                                        <div class="ride-time">
+                                            <i class="fas fa-clock"></i>
+                                            <span>Started 30 min ago</span>
+                                        </div>
+                                        <div class="ride-passengers">
+                                            <i class="fas fa-users"></i>
+                                            <span>3 passengers</span>
+                                        </div>
+                                        <div class="ride-price">
+                                            <i class="fas fa-dollar-sign"></i>
+                                            <span>$60.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="ride-actions">
+                                        <button class="btn-action primary">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            Track Live
+                                        </button>
+                                        <button class="btn-action secondary">
+                                            <i class="fas fa-phone"></i>
+                                            Contact
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- History Tab -->
+                    <div id="history-tab" class="tab-content">
+                        <div class="rides-section">
+                            <div class="section-title">
+                                <h3>Ride History</h3>
+                                <span class="count">12 rides</span>
+                            </div>
+                            <div id="history-rides-container" class="rides-container">
+                                <!-- Will be populated by JavaScript -->
+                                <div class="ride-card completed">
+                                    <div class="ride-header">
+                                        <div class="ride-route">
+                                            <span class="from">Toronto</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                            <span class="to">Mississauga</span>
+                                        </div>
+                                        <span class="ride-status completed">Completed</span>
+                                    </div>
+                                    <div class="ride-details">
+                                        <div class="ride-time">
+                                            <i class="fas fa-calendar"></i>
+                                            <span>Dec 15, 2024</span>
+                                        </div>
+                                        <div class="ride-driver">
+                                            <i class="fas fa-user"></i>
+                                            <span>Michael Chen (4.7★)</span>
+                                        </div>
+                                        <div class="ride-price">
+                                            <i class="fas fa-dollar-sign"></i>
+                                            <span>$25.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="ride-actions">
+                                        <button class="btn-action secondary" onclick="app.showReviewModal(this)" data-driver-id="12345" data-ride-id="ride789">
+                                            <i class="fas fa-star"></i>
+                                            Rate Trip
+                                        </button>
+                                        <button class="btn-action secondary">
+                                            <i class="fas fa-receipt"></i>
+                                            Receipt
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profile-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="goToDashboard()" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Profile</h2>
+                    <button onclick="app.logout()" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+                
+                <div class="profile-content">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 id="profile-name">John Doe</h3>
+                        <p id="profile-role">Passenger</p>
+                        <div class="profile-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-menu">
+                        <div class="menu-item" onclick="showPage('edit-profile')">
+                            <div class="menu-icon">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="menu-text">
+                                <span>Edit Profile</span>
+                                <small>Update your information</small>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="menu-item" onclick="showPage('payment-methods')">
+                            <div class="menu-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="menu-text">
+                                <span>Payment Methods</span>
+                                <small>Manage cards and payments</small>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="menu-item admin-only" onclick="showAdminDashboard()" id="admin-menu-item" style="display: none;">
+                            <div class="menu-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="menu-text">
+                                <span>Admin Dashboard</span>
+                                <small>Platform management</small>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="menu-item" onclick="showPage('notifications-settings')">
+                            <div class="menu-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="menu-text">
+                                <span>Notifications</span>
+                                <small>Manage your notifications</small>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div class="menu-item" onclick="showPage('help')">
+                            <div class="menu-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="menu-text">
+                                <span>Help & Support</span>
+                                <small>Get help and contact us</small>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        
+                        <div id="profile-install-item" class="menu-item install-menu-item" onclick="window.pwaService?.showInstallOptions()" style="display: none;">
+                            <div class="menu-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="menu-text">
+                                <span>Install App</span>
+                                <small>Get the app on your device</small>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+
+                        <div class="menu-item" onclick="showPage('about')">
+                            <div class="menu-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="menu-text">
+                                <span>About</span>
+                                <small>App version and info</small>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Screen -->
+        <div id="edit-profile-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="showPage('profile')" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Edit Profile</h2>
+                    <button onclick="saveProfile()" class="btn-save">Save</button>
+                </div>
+                
+                <div class="edit-profile-content">
+                    <div class="profile-photo-section">
+                        <div class="profile-photo">
+                            <div id="profile-photo-preview" class="photo-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <button type="button" class="change-photo-btn" onclick="document.getElementById('profile-photo-input').click()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <input type="file" id="profile-photo-input" name="profilePhoto" accept="image/*" style="display: none;" onchange="window.app.handleProfilePhotoChange(event)">
+                        </div>
+                        <div class="photo-controls">
+                            <button type="button" class="btn-change-photo" onclick="document.getElementById('profile-photo-input').click()">Change Photo</button>
+                            <button type="button" id="remove-photo-btn" class="btn-remove-photo" style="display: none;" onclick="window.app.removeProfilePhoto()">Remove</button>
+                        </div>
+                        <div id="photo-upload-progress" class="upload-progress" style="display: none;">
+                            <div class="progress-bar"></div>
+                            <span class="progress-text">Uploading... 0%</span>
+                        </div>
+                    </div>
+                    
+                    <form id="edit-profile-form" class="mobile-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" name="fullName" id="edit-full-name" placeholder="Enter your full name" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" name="email" id="edit-email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" name="phone" id="edit-phone" placeholder="Enter your phone number" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar"></i>
+                                <input type="date" name="dateOfBirth" id="edit-date-of-birth">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-pen"></i>
+                                <textarea name="bio" id="edit-bio" placeholder="Tell others about yourself" rows="3"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Emergency Contact</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user-shield"></i>
+                                <input type="text" name="emergencyContact" id="edit-emergency-contact" placeholder="Emergency contact name">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Emergency Phone</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-phone-alt"></i>
+                                <input type="tel" name="emergencyPhone" id="edit-emergency-phone" placeholder="Emergency contact phone">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Methods Screen -->
+        <div id="payment-methods-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="showPage('profile')" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Payment Methods</h2>
+                    <button onclick="showAddPaymentModal()" class="btn-add">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                
+                <div class="payment-methods-content">
+                    <div class="section-header">
+                        <h3>Cards</h3>
+                    </div>
+                    
+                    <div id="payment-cards-list" class="payment-cards">
+                        <!-- Example payment cards -->
+                        <div class="payment-card">
+                            <div class="card-info">
+                                <div class="card-icon">
+                                    <i class="fab fa-cc-visa"></i>
+                                </div>
+                                <div class="card-details">
+                                    <span class="card-number">•••• •••• •••• 4242</span>
+                                    <span class="card-expiry">Expires 12/26</span>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-default">Default</button>
+                                <button class="btn-remove">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-card">
+                            <div class="card-info">
+                                <div class="card-icon">
+                                    <i class="fab fa-cc-mastercard"></i>
+                                </div>
+                                <div class="card-details">
+                                    <span class="card-number">•••• •••• •••• 8888</span>
+                                    <span class="card-expiry">Expires 09/25</span>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-set-default">Set Default</button>
+                                <button class="btn-remove">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-header">
+                        <h3>Bank Account</h3>
+                    </div>
+                    
+                    <div class="bank-account-section">
+                        <div class="bank-account">
+                            <div class="bank-info">
+                                <div class="bank-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="bank-details">
+                                    <span class="bank-name">TD Canada Trust</span>
+                                    <span class="account-number">•••• •••• 1234</span>
+                                </div>
+                            </div>
+                            <div class="bank-actions">
+                                <button class="btn-edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-add-bank">
+                            <i class="fas fa-plus"></i>
+                            Add Bank Account
+                        </button>
+                    </div>
+                    
+                    <div class="payment-security">
+                        <div class="security-info">
+                            <i class="fas fa-shield-alt"></i>
+                            <div class="security-text">
+                                <h4>Your payments are secure</h4>
+                                <p>We use bank-level encryption to protect your payment information.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications Settings Screen -->
+        <div id="notifications-settings-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="showPage('profile')" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Notifications</h2>
+                </div>
+                
+                <div class="notifications-content">
+                    <div class="section-header">
+                        <h3>Push Notifications</h3>
+                        <p>Manage what notifications you receive</p>
+                    </div>
+                    
+                    <div class="notification-settings">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div class="setting-text">
+                                    <h4>Ride Updates</h4>
+                                    <p>Driver confirmations, trip updates</p>
+                                </div>
+                            </div>
+                            <div class="setting-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon">
+                                    <i class="fas fa-message"></i>
+                                </div>
+                                <div class="setting-text">
+                                    <h4>Messages</h4>
+                                    <p>New messages from drivers/passengers</p>
+                                </div>
+                            </div>
+                            <div class="setting-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="setting-text">
+                                    <h4>Payment Updates</h4>
+                                    <p>Payment confirmations, receipts</p>
+                                </div>
+                            </div>
+                            <div class="setting-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="setting-text">
+                                    <h4>Promotions</h4>
+                                    <p>Special offers and discounts</p>
+                                </div>
+                            </div>
+                            <div class="setting-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <div class="setting-text">
+                                    <h4>Ride Reminders</h4>
+                                    <p>Reminders before scheduled trips</p>
+                                </div>
+                            </div>
+                            <div class="setting-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-header">
+                        <h3>Email Notifications</h3>
+                    </div>
+                    
+                    <div class="notification-settings">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon">
+                                    <i class="fas fa-receipt"></i>
+                                </div>
+                                <div class="setting-text">
+                                    <h4>Trip Receipts</h4>
+                                    <p>Email receipts after completed trips</p>
+                                </div>
+                            </div>
+                            <div class="setting-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="setting-text">
+                                    <h4>Weekly Summary</h4>
+                                    <p>Your weekly ride and earnings summary</p>
+                                </div>
+                            </div>
+                            <div class="setting-toggle">
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="notification-quiet-hours">
+                        <div class="section-header">
+                            <h3>Quiet Hours</h3>
+                            <p>Don't send notifications during these hours</p>
+                        </div>
+                        
+                        <div class="quiet-hours-settings">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-moon"></i>
+                                    </div>
+                                    <div class="setting-text">
+                                        <h4>Enable Quiet Hours</h4>
+                                    </div>
+                                </div>
+                                <div class="setting-toggle">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="quiet-hours-toggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="time-range-settings" id="quiet-hours-times" style="display: none;">
+                                <div class="time-input-group">
+                                    <label>From</label>
+                                    <input type="time" value="22:00">
+                                </div>
+                                <div class="time-input-group">
+                                    <label>To</label>
+                                    <input type="time" value="08:00">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help & Support Screen -->
+        <div id="help-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="showPage('profile')" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Help & Support</h2>
+                </div>
+                
+                <div class="help-content">
+                    <div class="search-help">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search for help topics..." id="help-search">
+                        </div>
+                    </div>
+                    
+                    <div class="help-sections">
+                        <div class="help-section">
+                            <h3>Quick Actions</h3>
+                            <div class="quick-actions">
+                                <button class="quick-action-btn" onclick="showHelpTopic('contact')">
+                                    <i class="fas fa-headset"></i>
+                                    <span>Contact Support</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="showHelpTopic('report')">
+                                    <i class="fas fa-flag"></i>
+                                    <span>Report Issue</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="showHelpTopic('safety')">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Safety Center</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="help-section">
+                            <h3>Frequently Asked Questions</h3>
+                            <div class="faq-list">
+                                <div class="faq-item">
+                                    <div class="faq-question" onclick="toggleFAQ(this)">
+                                        <span>How do I book a ride?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>To book a ride, go to "Find Rides", enter your pickup and destination locations, select your preferred date and time, then browse available rides and click "Book" on your preferred option.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question" onclick="toggleFAQ(this)">
+                                        <span>How do cancellations work?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>You can cancel a ride up to 12 hours before departure for a full refund. Cancellations within 12 hours may incur a small fee, except in emergency situations.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question" onclick="toggleFAQ(this)">
+                                        <span>How are prices calculated?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Prices are set by drivers between $0.15-$0.25 per kilometer per passenger. A 15% service fee is automatically added to cover platform costs and insurance.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question" onclick="toggleFAQ(this)">
+                                        <span>What if my driver doesn't show up?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>If your driver doesn't arrive within 15 minutes of the scheduled time, you can report this in the app and receive a full refund. We'll also help you find alternative transportation.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item">
+                                    <div class="faq-question" onclick="toggleFAQ(this)">
+                                        <span>How do I become a driver?</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>To become a driver, select "Driver" during signup, provide your driver's license, vehicle registration, and insurance information. We'll verify your documents and approve your account within 24-48 hours.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="help-section">
+                            <h3>Topics</h3>
+                            <div class="help-topics">
+                                <div class="topic-item" onclick="showHelpTopic('booking')">
+                                    <div class="topic-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="topic-text">
+                                        <span>Booking & Payments</span>
+                                        <small>How to book rides and manage payments</small>
+                                    </div>
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                                
+                                <div class="topic-item" onclick="showHelpTopic('safety')">
+                                    <div class="topic-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="topic-text">
+                                        <span>Safety & Security</span>
+                                        <small>Safety features and guidelines</small>
+                                    </div>
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                                
+                                <div class="topic-item" onclick="showHelpTopic('driver')">
+                                    <div class="topic-icon">
+                                        <i class="fas fa-car"></i>
+                                    </div>
+                                    <div class="topic-text">
+                                        <span>Driver Information</span>
+                                        <small>Guidelines for drivers</small>
+                                    </div>
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                                
+                                <div class="topic-item" onclick="showHelpTopic('account')">
+                                    <div class="topic-icon">
+                                        <i class="fas fa-user-cog"></i>
+                                    </div>
+                                    <div class="topic-text">
+                                        <span>Account Settings</span>
+                                        <small>Manage your account and preferences</small>
+                                    </div>
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-support">
+                        <div class="support-card">
+                            <div class="support-info">
+                                <h4>Still need help?</h4>
+                                <p>Our support team is available 24/7</p>
+                            </div>
+                            <div class="support-actions">
+                                <button class="btn-contact" onclick="contactSupport('chat')">
+                                    <i class="fas fa-comment"></i>
+                                    Live Chat
+                                </button>
+                                <button class="btn-contact" onclick="contactSupport('email')">
+                                    <i class="fas fa-envelope"></i>
+                                    Email Us
+                                </button>
+                                <button class="btn-contact" onclick="contactSupport('phone')">
+                                    <i class="fas fa-phone"></i>
+                                    Call Support
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Screen -->
+        <div id="about-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="showPage('profile')" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>About</h2>
+                </div>
+                
+                <div class="about-content">
+                    <div class="app-info">
+                        <div class="app-logo-large">
+                            <div class="logo-circle">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <h1>OnGoPool</h1>
+                            <p class="version">Version 1.0.0</p>
+                        </div>
+                        
+                        <div class="app-description">
+                            <p>OnGoPool is Canada's affordable rideshare platform connecting drivers and passengers across the country. Share rides, save money, and help reduce carbon emissions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-sections">
+                        <div class="about-section">
+                            <h3>Features</h3>
+                            <div class="features-list">
+                                <div class="feature-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Safe & verified drivers</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>Transparent pricing</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Real-time tracking</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>Secure payments</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-leaf"></i>
+                                    <span>Eco-friendly travel</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>24/7 support</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="about-section">
+                            <h3>Legal & Privacy</h3>
+                            <div class="legal-links">
+                                <div class="legal-item" onclick="showPage('terms')">
+                                    <span>Terms of Service</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                                <div class="legal-item" onclick="showPage('privacy')">
+                                    <span>Privacy Policy</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                                <div class="legal-item" onclick="showLicenses()">
+                                    <span>Open Source Licenses</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="about-section">
+                            <h3>Contact & Social</h3>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>support@ongopool.ca</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-globe"></i>
+                                    <span>www.ongopool.ca</span>
+                                </div>
+                            </div>
+                            
+                            <div class="social-links">
+                                <button class="social-btn">
+                                    <i class="fab fa-facebook-f"></i>
+                                </button>
+                                <button class="social-btn">
+                                    <i class="fab fa-twitter"></i>
+                                </button>
+                                <button class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </button>
+                                <button class="social-btn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="about-section">
+                            <h3>App Information</h3>
+                            <div class="app-details">
+                                <div class="detail-row">
+                                    <span class="label">Version</span>
+                                    <span class="value">1.0.0</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Build</span>
+                                    <span class="value">100</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Last Updated</span>
+                                    <span class="value">January 2025</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Size</span>
+                                    <span class="value">12.5 MB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="about-footer">
+                        <p>© 2025 OnGoPool Inc. All rights reserved.</p>
+                        <p>Made with ❤️ in Canada</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings Screen -->
+        <div id="earnings-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="goToDashboard()" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Earnings</h2>
+                    <button onclick="exportEarnings()" class="btn-export">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+                
+                <div class="earnings-content">
+                    <!-- Summary Cards -->
+                    <div class="earnings-summary">
+                        <div class="summary-card total">
+                            <div class="summary-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="summary-info">
+                                <span class="summary-amount">$1,240.50</span>
+                                <span class="summary-label">Total Earnings</span>
+                                <span class="summary-period">This Month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-stats">
+                            <div class="stat-card">
+                                <div class="stat-value">$156.30</div>
+                                <div class="stat-label">This Week</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +12%
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-value">24</div>
+                                <div class="stat-label">Trips</div>
+                                <div class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +8%
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-value">$51.70</div>
+                                <div class="stat-label">Avg/Trip</div>
+                                <div class="stat-change negative">
+                                    <i class="fas fa-arrow-down"></i>
+                                    -3%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Time Period Filter -->
+                    <div class="earnings-filter">
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" data-period="week">Week</button>
+                            <button class="filter-tab" data-period="month">Month</button>
+                            <button class="filter-tab" data-period="quarter">Quarter</button>
+                            <button class="filter-tab" data-period="year">Year</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Earnings Chart -->
+                    <div class="earnings-chart">
+                        <div class="chart-header">
+                            <h3>Earnings Overview</h3>
+                            <span class="chart-period">Last 7 days</span>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-placeholder">
+                                <div class="chart-bars">
+                                    <div class="chart-bar" style="height: 60%">
+                                        <span class="bar-value">$45</span>
+                                        <span class="bar-day">Mon</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 80%">
+                                        <span class="bar-value">$68</span>
+                                        <span class="bar-day">Tue</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 40%">
+                                        <span class="bar-value">$32</span>
+                                        <span class="bar-day">Wed</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 90%">
+                                        <span class="bar-value">$78</span>
+                                        <span class="bar-day">Thu</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 100%">
+                                        <span class="bar-value">$85</span>
+                                        <span class="bar-day">Fri</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 70%">
+                                        <span class="bar-value">$58</span>
+                                        <span class="bar-day">Sat</span>
+                                    </div>
+                                    <div class="chart-bar" style="height: 55%">
+                                        <span class="bar-value">$42</span>
+                                        <span class="bar-day">Sun</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payout Information -->
+                    <div class="payout-info">
+                        <div class="payout-card">
+                            <div class="payout-header">
+                                <div class="payout-title">
+                                    <h3>Next Payout</h3>
+                                    <span class="payout-schedule">Every Thursday</span>
+                                </div>
+                                <div class="payout-amount">$156.30</div>
+                            </div>
+                            
+                            <div class="payout-details">
+                                <div class="payout-row">
+                                    <span class="label">Payout Date</span>
+                                    <span class="value">January 18, 2025</span>
+                                </div>
+                                <div class="payout-row">
+                                    <span class="label">Payment Method</span>
+                                    <span class="value">TD Bank •••• 1234</span>
+                                </div>
+                                <div class="payout-row">
+                                    <span class="label">Processing Time</span>
+                                    <span class="value">1-3 business days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Transactions -->
+                    <div class="recent-transactions">
+                        <div class="section-header">
+                            <h3>Recent Transactions</h3>
+                            <button onclick="showAllTransactions()" class="btn-see-all">See All</button>
+                        </div>
+                        
+                        <div class="transactions-list">
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-route">
+                                        <span class="from">Toronto</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                        <span class="to">Ottawa</span>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <span class="transaction-date">Today, 3:45 PM</span>
+                                        <span class="transaction-passengers">2 passengers</span>
+                                    </div>
+                                </div>
+                                <div class="transaction-amount positive">
+                                    +$68.00
+                                </div>
+                            </div>
+                            
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-route">
+                                        <span class="from">Hamilton</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                        <span class="to">Toronto</span>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <span class="transaction-date">Yesterday, 8:20 AM</span>
+                                        <span class="transaction-passengers">1 passenger</span>
+                                    </div>
+                                </div>
+                                <div class="transaction-amount positive">
+                                    +$32.00
+                                </div>
+                            </div>
+                            
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-route">
+                                        <span class="from">Weekly Payout</span>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <span class="transaction-date">Jan 11, 9:00 AM</span>
+                                        <span class="transaction-type">Bank Transfer</span>
+                                    </div>
+                                </div>
+                                <div class="transaction-amount payout">
+                                    $445.20
+                                </div>
+                            </div>
+                            
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-route">
+                                        <span class="from">Mississauga</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                        <span class="to">Oakville</span>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <span class="transaction-date">Jan 10, 6:15 PM</span>
+                                        <span class="transaction-passengers">3 passengers</span>
+                                    </div>
+                                </div>
+                                <div class="transaction-amount positive">
+                                    +$78.50
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Metrics -->
+                    <div class="performance-metrics">
+                        <div class="section-header">
+                            <h3>Performance</h3>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">4.9</span>
+                                    <span class="metric-label">Rating</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">96%</span>
+                                    <span class="metric-label">Acceptance</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">18h</span>
+                                    <span class="metric-label">Online Time</span>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <span class="metric-value">486km</span>
+                                    <span class="metric-label">Distance</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard Page -->
+        <div id="admin-dashboard-page" class="page">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <h2>Admin Dashboard</h2>
+                    <div class="header-actions">
+                        <button class="btn-icon" onclick="refreshAdminData()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button class="btn-icon" onclick="showPage('profile')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Navigation Tabs -->
+                <div class="admin-nav-tabs">
+                    <button class="tab-btn active" onclick="showAdminTab('overview')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Overview</span>
+                    </button>
+                    <button class="tab-btn" onclick="showAdminTab('users')">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </button>
+                    <button class="tab-btn" onclick="showAdminTab('disputes')">
+                        <i class="fas fa-gavel"></i>
+                        <span>Disputes</span>
+                    </button>
+                    <button class="tab-btn" onclick="showAdminTab('pricing')">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Pricing</span>
+                    </button>
+                    <button class="tab-btn" onclick="showAdminTab('analytics')">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Analytics</span>
+                    </button>
+                </div>
+
+                <!-- Overview Tab -->
+                <div id="admin-overview-tab" class="admin-tab-content active">
+                    <div class="admin-stats-grid">
+                        <div class="admin-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-users-count">1,247</h3>
+                                <p>Total Users</p>
+                                <span class="stat-change positive">+12% this month</span>
+                            </div>
+                        </div>
+
+                        <div class="admin-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="active-drivers-count">342</h3>
+                                <p>Active Drivers</p>
+                                <span class="stat-change positive">+8% this month</span>
+                            </div>
+                        </div>
+
+                        <div class="admin-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-rides-count">5,683</h3>
+                                <p>Total Rides</p>
+                                <span class="stat-change positive">+15% this month</span>
+                            </div>
+                        </div>
+
+                        <div class="admin-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="platform-revenue-count">$42,156</h3>
+                                <p>Platform Revenue</p>
+                                <span class="stat-change positive">+23% this month</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions-grid">
+                            <button class="quick-action-card" onclick="showAdminTab('users')">
+                                <i class="fas fa-user-check"></i>
+                                <span>Verify Drivers</span>
+                                <small id="pending-verifications">12 pending</small>
+                            </button>
+                            <button class="quick-action-card" onclick="showAdminTab('disputes')">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Review Disputes</span>
+                                <small id="open-disputes">3 open</small>
+                            </button>
+                            <button class="quick-action-card" onclick="exportPlatformData()">
+                                <i class="fas fa-download"></i>
+                                <span>Export Data</span>
+                                <small>Generate reports</small>
+                            </button>
+                            <button class="quick-action-card" onclick="showSystemSettings()">
+                                <i class="fas fa-cog"></i>
+                                <span>System Settings</span>
+                                <small>Platform config</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list" id="admin-activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p><strong>New driver registration</strong></p>
+                                    <small>Sarah Johnson signed up as driver</small>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-gavel"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p><strong>Dispute resolved</strong></p>
+                                    <small>Payment dispute #1234 closed</small>
+                                    <span class="activity-time">4 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p><strong>Driver verification</strong></p>
+                                    <small>Mike Chen's documents approved</small>
+                                    <span class="activity-time">6 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Management Tab -->
+                <div id="admin-users-tab" class="admin-tab-content">
+                    <div class="users-management-header">
+                        <div class="search-filters">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search users..." id="user-search-input">
+                            </div>
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" onclick="filterUsers('all')">All</button>
+                                <button class="filter-btn" onclick="filterUsers('drivers')">Drivers</button>
+                                <button class="filter-btn" onclick="filterUsers('passengers')">Passengers</button>
+                                <button class="filter-btn" onclick="filterUsers('pending')">Pending Verification</button>
+                                <button class="filter-btn" onclick="filterUsers('suspended')">Suspended</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="users-list" id="admin-users-list">
+                        <!-- Dynamic content will be loaded here -->
+                        </div>
+
+                        <div class="user-card">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-info">
+                                <h4>Mike Chen</h4>
+                                <p>mike.chen@email.com</p>
+                                <div class="user-badges">
+                                    <span class="badge driver">Driver</span>
+                                    <span class="badge pending">Pending Verification</span>
+                                </div>
+                                <small>Joined: Jan 20, 2024 • 0 trips • No rating</small>
+                            </div>
+                            <div class="user-actions">
+                                <button class="btn-icon" onclick="viewUserDetails('user_002')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="editUser('user_002')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn-icon dropdown-toggle">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="verifyDriver('user_002')">Verify Driver</a>
+                                        <a href="#" onclick="rejectVerification('user_002')">Reject Verification</a>
+                                        <a href="#" onclick="requestMoreDocs('user_002')">Request More Docs</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="user-card">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-info">
+                                <h4>Emma Wilson</h4>
+                                <p>emma.wilson@email.com</p>
+                                <div class="user-badges">
+                                    <span class="badge passenger">Passenger</span>
+                                    <span class="badge verified">Verified</span>
+                                </div>
+                                <small>Joined: Dec 10, 2023 • 23 trips • 4.9★</small>
+                            </div>
+                            <div class="user-actions">
+                                <button class="btn-icon" onclick="viewUserDetails('user_003')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="editUser('user_003')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn-icon dropdown-toggle">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="viewUserHistory('user_003')">View History</a>
+                                        <a href="#" onclick="sendMessage('user_003')">Send Message</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pagination">
+                        <button class="pagination-btn" onclick="loadUsersPage(1)">1</button>
+                        <button class="pagination-btn active" onclick="loadUsersPage(2)">2</button>
+                        <button class="pagination-btn" onclick="loadUsersPage(3)">3</button>
+                        <span>...</span>
+                        <button class="pagination-btn" onclick="loadUsersPage(25)">25</button>
+                    </div>
+                </div>
+
+                <!-- Disputes Management Tab -->
+                <div id="admin-disputes-tab" class="admin-tab-content">
+                    <div class="disputes-header">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" onclick="filterDisputes('all')">All Disputes</button>
+                            <button class="filter-btn" onclick="filterDisputes('open')">Open</button>
+                            <button class="filter-btn" onclick="filterDisputes('in-progress')">In Progress</button>
+                            <button class="filter-btn" onclick="filterDisputes('resolved')">Resolved</button>
+                        </div>
+                    </div>
+
+                    <div class="disputes-list" id="admin-disputes-list">
+                        <div class="dispute-card">
+                            <div class="dispute-header">
+                                <div class="dispute-id">
+                                    <h4>Dispute #1234</h4>
+                                    <span class="status-badge open">Open</span>
+                                </div>
+                                <div class="dispute-priority">
+                                    <span class="priority-badge high">High Priority</span>
+                                </div>
+                            </div>
+                            <div class="dispute-content">
+                                <p><strong>Issue:</strong> Payment dispute - Driver didn't receive payment for completed ride</p>
+                                <div class="dispute-parties">
+                                    <div class="party">
+                                        <span class="party-label">Driver:</span>
+                                        <span>John Smith (john.smith@email.com)</span>
+                                    </div>
+                                    <div class="party">
+                                        <span class="party-label">Passenger:</span>
+                                        <span>Lisa Brown (lisa.brown@email.com)</span>
+                                    </div>
+                                </div>
+                                <div class="dispute-details">
+                                    <small>Ride Date: Jan 22, 2024 • Amount: $45.00 • Reported: 2 hours ago</small>
+                                </div>
+                            </div>
+                            <div class="dispute-actions">
+                                <button class="btn-primary" onclick="assignDispute('1234')">Assign to Me</button>
+                                <button class="btn-secondary" onclick="viewDisputeDetails('1234')">View Details</button>
+                                <button class="btn-icon" onclick="escalateDispute('1234')">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="dispute-card">
+                            <div class="dispute-header">
+                                <div class="dispute-id">
+                                    <h4>Dispute #1233</h4>
+                                    <span class="status-badge in-progress">In Progress</span>
+                                </div>
+                                <div class="dispute-priority">
+                                    <span class="priority-badge medium">Medium Priority</span>
+                                </div>
+                            </div>
+                            <div class="dispute-content">
+                                <p><strong>Issue:</strong> Driver arrived late and passenger wants refund</p>
+                                <div class="dispute-parties">
+                                    <div class="party">
+                                        <span class="party-label">Driver:</span>
+                                        <span>Mark Wilson (mark.wilson@email.com)</span>
+                                    </div>
+                                    <div class="party">
+                                        <span class="party-label">Passenger:</span>
+                                        <span>Anna Davis (anna.davis@email.com)</span>
+                                    </div>
+                                </div>
+                                <div class="dispute-details">
+                                    <small>Ride Date: Jan 21, 2024 • Amount: $32.50 • Assigned to: Admin Sarah</small>
+                                </div>
+                            </div>
+                            <div class="dispute-actions">
+                                <button class="btn-primary" onclick="resolveDispute('1233')">Resolve</button>
+                                <button class="btn-secondary" onclick="viewDisputeDetails('1233')">View Details</button>
+                                <button class="btn-icon" onclick="addDisputeNote('1233')">
+                                    <i class="fas fa-comment"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="dispute-card">
+                            <div class="dispute-header">
+                                <div class="dispute-id">
+                                    <h4>Dispute #1232</h4>
+                                    <span class="status-badge resolved">Resolved</span>
+                                </div>
+                                <div class="dispute-priority">
+                                    <span class="priority-badge low">Low Priority</span>
+                                </div>
+                            </div>
+                            <div class="dispute-content">
+                                <p><strong>Issue:</strong> Passenger complaint about vehicle cleanliness</p>
+                                <div class="dispute-parties">
+                                    <div class="party">
+                                        <span class="party-label">Driver:</span>
+                                        <span>Carlos Rodriguez (carlos.r@email.com)</span>
+                                    </div>
+                                    <div class="party">
+                                        <span class="party-label">Passenger:</span>
+                                        <span>Tom Green (tom.green@email.com)</span>
+                                    </div>
+                                </div>
+                                <div class="dispute-details">
+                                    <small>Ride Date: Jan 18, 2024 • Resolved: Jan 20, 2024 • Resolution: Warning issued</small>
+                                </div>
+                            </div>
+                            <div class="dispute-actions">
+                                <button class="btn-secondary" onclick="viewDisputeDetails('1232')">View Details</button>
+                                <button class="btn-icon" onclick="reopenDispute('1232')">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing Management Tab -->
+                <div id="admin-pricing-tab" class="admin-tab-content">
+                    <div class="pricing-management-header">
+                        <h3>Pricing Management</h3>
+                        <p>Set per-seat per-kilometer pricing tiers and constraints</p>
+                    </div>
+
+                    <!-- Current Pricing Overview -->
+                    <div class="current-pricing-overview">
+                        <h4>Current Pricing Structure</h4>
+                        <div class="pricing-overview-grid">
+                            <div class="pricing-overview-card">
+                                <div class="pricing-icon">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="pricing-content">
+                                    <h5>Short Distance (0-50km)</h5>
+                                    <p>$0.18 - $0.25 per seat per km</p>
+                                    <small>Currently active tier</small>
+                                </div>
+                            </div>
+                            <div class="pricing-overview-card">
+                                <div class="pricing-icon">
+                                    <i class="fas fa-road"></i>
+                                </div>
+                                <div class="pricing-content">
+                                    <h5>Medium Distance (51-150km)</h5>
+                                    <p>$0.15 - $0.22 per seat per km</p>
+                                    <small>Currently active tier</small>
+                                </div>
+                            </div>
+                            <div class="pricing-overview-card">
+                                <div class="pricing-icon">
+                                    <i class="fas fa-highway"></i>
+                                </div>
+                                <div class="pricing-content">
+                                    <h5>Long Distance (151km+)</h5>
+                                    <p>$0.12 - $0.20 per seat per km</p>
+                                    <small>Currently active tier</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Tiers Configuration -->
+                    <div class="pricing-tiers-section">
+                        <div class="section-header-with-action">
+                            <h4>Distance-Based Pricing Tiers</h4>
+                            <button class="btn-primary" onclick="addNewPricingTier()">
+                                <i class="fas fa-plus"></i>
+                                Add Tier
+                            </button>
+                        </div>
+
+                        <div class="pricing-tiers-list" id="pricing-tiers-list">
+                            <!-- Tier 1: Short Distance -->
+                            <div class="pricing-tier-card" data-tier="1">
+                                <div class="tier-header">
+                                    <div class="tier-info">
+                                        <h5>Tier 1: Short Distance</h5>
+                                        <span class="tier-status active">Active</span>
+                                    </div>
+                                    <div class="tier-actions">
+                                        <button class="btn-icon" onclick="editPricingTier(1)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon" onclick="toggleTierStatus(1)">
+                                            <i class="fas fa-power-off"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="tier-details">
+                                    <div class="tier-range">
+                                        <label>Distance Range:</label>
+                                        <div class="range-inputs">
+                                            <input type="number" value="0" readonly> km to 
+                                            <input type="number" value="50" id="tier1-max"> km
+                                        </div>
+                                    </div>
+                                    <div class="tier-pricing">
+                                        <div class="pricing-input-group">
+                                            <label>Minimum Price per Seat per KM:</label>
+                                            <div class="currency-input">
+                                                <span>$</span>
+                                                <input type="number" step="0.01" value="0.18" id="tier1-min">
+                                            </div>
+                                        </div>
+                                        <div class="pricing-input-group">
+                                            <label>Maximum Price per Seat per KM:</label>
+                                            <div class="currency-input">
+                                                <span>$</span>
+                                                <input type="number" step="0.01" value="0.25" id="tier1-max-price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tier-example">
+                                        <small>Example: 30km ride with 3 passengers = $16.20 - $22.50 total</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tier 2: Medium Distance -->
+                            <div class="pricing-tier-card" data-tier="2">
+                                <div class="tier-header">
+                                    <div class="tier-info">
+                                        <h5>Tier 2: Medium Distance</h5>
+                                        <span class="tier-status active">Active</span>
+                                    </div>
+                                    <div class="tier-actions">
+                                        <button class="btn-icon" onclick="editPricingTier(2)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon" onclick="toggleTierStatus(2)">
+                                            <i class="fas fa-power-off"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="tier-details">
+                                    <div class="tier-range">
+                                        <label>Distance Range:</label>
+                                        <div class="range-inputs">
+                                            <input type="number" value="51" id="tier2-min"> km to 
+                                            <input type="number" value="150" id="tier2-max"> km
+                                        </div>
+                                    </div>
+                                    <div class="tier-pricing">
+                                        <div class="pricing-input-group">
+                                            <label>Minimum Price per Seat per KM:</label>
+                                            <div class="currency-input">
+                                                <span>$</span>
+                                                <input type="number" step="0.01" value="0.15" id="tier2-min-price">
+                                            </div>
+                                        </div>
+                                        <div class="pricing-input-group">
+                                            <label>Maximum Price per Seat per KM:</label>
+                                            <div class="currency-input">
+                                                <span>$</span>
+                                                <input type="number" step="0.01" value="0.22" id="tier2-max-price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tier-example">
+                                        <small>Example: 100km ride with 3 passengers = $45.00 - $66.00 total</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tier 3: Long Distance -->
+                            <div class="pricing-tier-card" data-tier="3">
+                                <div class="tier-header">
+                                    <div class="tier-info">
+                                        <h5>Tier 3: Long Distance</h5>
+                                        <span class="tier-status active">Active</span>
+                                    </div>
+                                    <div class="tier-actions">
+                                        <button class="btn-icon" onclick="editPricingTier(3)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon" onclick="toggleTierStatus(3)">
+                                            <i class="fas fa-power-off"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="tier-details">
+                                    <div class="tier-range">
+                                        <label>Distance Range:</label>
+                                        <div class="range-inputs">
+                                            <input type="number" value="151" id="tier3-min"> km to 
+                                            <input type="number" value="999" id="tier3-max" placeholder="No limit"> km
+                                        </div>
+                                    </div>
+                                    <div class="tier-pricing">
+                                        <div class="pricing-input-group">
+                                            <label>Minimum Price per Seat per KM:</label>
+                                            <div class="currency-input">
+                                                <span>$</span>
+                                                <input type="number" step="0.01" value="0.12" id="tier3-min-price">
+                                            </div>
+                                        </div>
+                                        <div class="pricing-input-group">
+                                            <label>Maximum Price per Seat per KM:</label>
+                                            <div class="currency-input">
+                                                <span>$</span>
+                                                <input type="number" step="0.01" value="0.20" id="tier3-max-price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tier-example">
+                                        <small>Example: 200km ride with 3 passengers = $72.00 - $120.00 total</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Pricing Settings -->
+                    <div class="additional-pricing-settings">
+                        <h4>Additional Pricing Settings</h4>
+                        
+                        <div class="settings-grid">
+                            <div class="setting-card">
+                                <div class="setting-header">
+                                    <h5>Platform Commission</h5>
+                                    <div class="setting-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked id="commission-enabled">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="setting-content">
+                                    <div class="commission-input">
+                                        <label>Commission Rate:</label>
+                                        <div class="percentage-input">
+                                            <input type="number" step="0.1" value="15" id="commission-rate">
+                                            <span>%</span>
+                                        </div>
+                                    </div>
+                                    <small>Platform fee added to all rides</small>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <div class="setting-header">
+                                    <h5>Minimum Ride Amount</h5>
+                                    <div class="setting-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked id="minimum-enabled">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="setting-content">
+                                    <div class="minimum-input">
+                                        <label>Minimum Total:</label>
+                                        <div class="currency-input">
+                                            <span>$</span>
+                                            <input type="number" step="0.50" value="5.00" id="minimum-amount">
+                                        </div>
+                                    </div>
+                                    <small>Minimum charge per ride regardless of distance</small>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <div class="setting-header">
+                                    <h5>Peak Hour Multiplier</h5>
+                                    <div class="setting-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="peak-hours-enabled">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="setting-content">
+                                    <div class="peak-settings">
+                                        <div class="multiplier-input">
+                                            <label>Peak Multiplier:</label>
+                                            <div class="multiplier-control">
+                                                <input type="number" step="0.1" value="1.5" id="peak-multiplier">
+                                                <span>x</span>
+                                            </div>
+                                        </div>
+                                        <div class="peak-hours">
+                                            <label>Peak Hours:</label>
+                                            <div class="time-range">
+                                                <input type="time" value="07:00" id="peak-start"> to 
+                                                <input type="time" value="09:00" id="peak-end">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small>Higher rates during busy periods</small>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <div class="setting-header">
+                                    <h5>Driver Price Override</h5>
+                                    <div class="setting-toggle">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked id="driver-override-enabled">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="setting-content">
+                                    <div class="override-settings">
+                                        <div class="override-limit">
+                                            <label>Max Deviation:</label>
+                                            <div class="percentage-input">
+                                                <input type="number" step="1" value="10" id="override-limit">
+                                                <span>%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small>Allow drivers to adjust prices within limits</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Calculator -->
+                    <div class="pricing-calculator">
+                        <h4>Pricing Calculator</h4>
+                        <div class="calculator-form">
+                            <div class="calc-inputs">
+                                <div class="calc-input-group">
+                                    <label>Distance (km):</label>
+                                    <input type="number" step="1" value="75" id="calc-distance" onchange="calculatePrice()">
+                                </div>
+                                <div class="calc-input-group">
+                                    <label>Number of Passengers:</label>
+                                    <input type="number" step="1" value="3" id="calc-passengers" onchange="calculatePrice()">
+                                </div>
+                                <div class="calc-input-group">
+                                    <label>Time of Day:</label>
+                                    <select id="calc-time" onchange="calculatePrice()">
+                                        <option value="normal">Normal Hours</option>
+                                        <option value="peak">Peak Hours</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="calc-results" id="calc-results">
+                                <div class="result-tier">
+                                    <strong>Tier:</strong> Medium Distance (51-150km)
+                                </div>
+                                <div class="result-range">
+                                    <strong>Price Range:</strong> $33.75 - $49.50
+                                </div>
+                                <div class="result-breakdown">
+                                    <small>75km × 3 passengers × $0.15-$0.22 per seat per km + 15% commission</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Changes -->
+                    <div class="pricing-actions">
+                        <button class="btn-primary" onclick="savePricingSettings()">
+                            <i class="fas fa-save"></i>
+                            Save All Changes
+                        </button>
+                        <button class="btn-secondary" onclick="resetPricingToDefaults()">
+                            <i class="fas fa-undo"></i>
+                            Reset to Defaults
+                        </button>
+                        <button class="btn-secondary" onclick="exportPricingConfig()">
+                            <i class="fas fa-download"></i>
+                            Export Configuration
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analytics Tab -->
+                <div id="admin-analytics-tab" class="admin-tab-content">
+                    <div class="analytics-filters">
+                        <div class="date-range-picker">
+                            <input type="date" id="analytics-start-date" value="2024-01-01">
+                            <span>to</span>
+                            <input type="date" id="analytics-end-date" value="2024-01-31">
+                            <button class="btn-secondary" onclick="updateAnalytics()">Update</button>
+                        </div>
+                        <div class="analytics-tabs">
+                            <button class="analytics-tab-btn active" onclick="showAnalyticsSection('overview')">Overview</button>
+                            <button class="analytics-tab-btn" onclick="showAnalyticsSection('revenue')">Revenue</button>
+                            <button class="analytics-tab-btn" onclick="showAnalyticsSection('usage')">Usage</button>
+                            <button class="analytics-tab-btn" onclick="showAnalyticsSection('performance')">Performance</button>
+                        </div>
+                    </div>
+
+                    <div id="analytics-overview" class="analytics-section active">
+                        <div class="analytics-chart-container">
+                            <h3>Platform Growth</h3>
+                            <div class="chart-placeholder">
+                                <canvas id="growth-chart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="analytics-metrics-grid">
+                            <div class="metric-card">
+                                <h4>User Growth Rate</h4>
+                                <div class="metric-value">12.3%</div>
+                                <div class="metric-trend positive">+2.1% vs last month</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Ride Completion Rate</h4>
+                                <div class="metric-value">94.2%</div>
+                                <div class="metric-trend positive">+1.8% vs last month</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Average Rating</h4>
+                                <div class="metric-value">4.7★</div>
+                                <div class="metric-trend neutral">No change</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Driver Utilization</h4>
+                                <div class="metric-value">73.5%</div>
+                                <div class="metric-trend negative">-3.2% vs last month</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="analytics-revenue" class="analytics-section">
+                        <div class="analytics-chart-container">
+                            <h3>Revenue Analytics</h3>
+                            <div class="chart-placeholder">
+                                <canvas id="revenue-chart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="revenue-breakdown">
+                            <h4>Revenue Breakdown</h4>
+                            <div class="breakdown-item">
+                                <span>Commission Fees (15%)</span>
+                                <span>$6,323</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Booking Fees</span>
+                                <span>$1,247</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Premium Features</span>
+                                <span>$892</span>
+                            </div>
+                            <div class="breakdown-total">
+                                <span>Total Platform Revenue</span>
+                                <span>$8,462</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="analytics-usage" class="analytics-section">
+                        <div class="usage-stats-grid">
+                            <div class="usage-chart">
+                                <h4>Peak Usage Hours</h4>
+                                <div class="chart-placeholder">
+                                    <canvas id="usage-chart" width="300" height="150"></canvas>
+                                </div>
+                            </div>
+                            <div class="popular-routes">
+                                <h4>Popular Routes</h4>
+                                <div class="route-list">
+                                    <div class="route-item">
+                                        <span>Toronto ↔ Ottawa</span>
+                                        <span>142 rides</span>
+                                    </div>
+                                    <div class="route-item">
+                                        <span>Montreal ↔ Quebec City</span>
+                                        <span>98 rides</span>
+                                    </div>
+                                    <div class="route-item">
+                                        <span>Vancouver ↔ Seattle</span>
+                                        <span>67 rides</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="analytics-performance" class="analytics-section">
+                        <div class="performance-indicators">
+                            <h4>Key Performance Indicators</h4>
+                            <div class="kpi-grid">
+                                <div class="kpi-card">
+                                    <div class="kpi-title">Average Response Time</div>
+                                    <div class="kpi-value">1.2s</div>
+                                    <div class="kpi-status good">Excellent</div>
+                                </div>
+                                <div class="kpi-card">
+                                    <div class="kpi-title">System Uptime</div>
+                                    <div class="kpi-value">99.7%</div>
+                                    <div class="kpi-status good">Good</div>
+                                </div>
+                                <div class="kpi-card">
+                                    <div class="kpi-title">Error Rate</div>
+                                    <div class="kpi-value">0.3%</div>
+                                    <div class="kpi-status good">Excellent</div>
+                                </div>
+                                <div class="kpi-card">
+                                    <div class="kpi-title">Database Load</div>
+                                    <div class="kpi-value">67%</div>
+                                    <div class="kpi-status warning">Monitor</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Chart.js CDN for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="js/supabase.js"></script>
+    <script src="js/pwa.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/app.js?v=1752242460&t=1705095860"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/rides.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/payments.js"></script>
+    <script src="js/admin.js"></script>
+    
+    <script>
+        // Global search function for rides
+        async function searchRides() {
+            try {
+                console.log('Search rides function called');
+                
+                // Get search form data
+                const pickup = document.getElementById('pickup-input')?.value;
+                const destination = document.getElementById('destination-input')?.value;
+                const date = document.getElementById('date-input')?.value;
+                const time = document.getElementById('time-input')?.value;
+                const passengers = document.getElementById('passengers-input')?.value;
+                
+                console.log('Search parameters:', { pickup, destination, date, time, passengers });
+                
+                if (!pickup) {
+                    window.app.showToast('Please enter a pickup location', 'error');
+                    return;
+                }
+                
+                // Show loading state
+                window.app.showLoading('Searching for rides...');
+                
+                // Create search parameters
+                const searchParams = {
+                    pickup,
+                    destination,
+                    date,
+                    time,
+                    passengers: passengers ? parseInt(passengers) : 1
+                };
+                
+                // Use the rides manager to search
+                const result = await window.ridesManager.searchRides(searchParams);
+                
+                // Hide loading
+                window.app.hideLoading();
+                
+                if (result.error) {
+                    console.error('Search error:', result.error);
+                    window.app.showToast(`Search error: ${result.error}`, 'error');
+                    return;
+                }
+                
+                console.log('Search results:', result.rides);
+                
+                // Display results
+                displaySearchResults(result.rides);
+                
+                window.app.showToast(`Found ${result.rides.length} rides`, 'success');
+                
+            } catch (error) {
+                console.error('Search rides error:', error);
+                window.app.hideLoading();
+                window.app.showToast('Search failed. Please try again.', 'error');
+            }
+        }
+        
+        function displaySearchResults(rides) {
+            const resultsContainer = document.getElementById('search-results');
+            if (!resultsContainer) return;
+            
+            if (rides.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>No rides found</h3>
+                        <p>Try adjusting your search criteria</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            resultsContainer.innerHTML = rides.map(ride => `
+                <div class="ride-card" onclick="viewRideDetails('${ride.id}')">
+                    <div class="ride-header">
+                        <div class="ride-route">
+                            <span class="from">${ride.pickup.address || ride.pickup}</span>
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="to">${ride.destination.address || ride.destination}</span>
+                        </div>
+                        <span class="ride-price">$${ride.totalPrice.toFixed(2)}</span>
+                    </div>
+                    <div class="ride-details">
+                        <span class="ride-time">${ride.date} at ${ride.time}</span>
+                        <span class="ride-driver">with ${ride.driver.name}</span>
+                        <span class="ride-seats">${ride.availableSeats} seats available</span>
+                    </div>
+                    <div class="ride-footer">
+                        <span class="ride-distance">${ride.distance}km</span>
+                        <span class="ride-rate">$${ride.pricePerKm}/km</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function viewRideDetails(rideId) {
+            console.log('View ride details:', rideId);
+            // Navigate to ride details page
+            window.app.showPage('ride-details');
+        }
+    </script>
+
+    <!-- Email Verification Success Page -->
+    <div id="email-verification-success-page" class="page">
+        <div class="mobile-screen">
+            <div class="auth-container">
+                <div class="verification-success">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2>Email Verified!</h2>
+                    <p>Your email has been successfully verified. You can now access all features of OnGoPool.</p>
+                    
+                    <div class="success-actions">
+                        <button onclick="proceedAfterVerification()" class="btn-primary">
+                            <i class="fas fa-arrow-right"></i>
+                            Continue to Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Verification Page -->
+    <div id="driver-verification-page" class="page">
+        <div class="mobile-screen">
+            <div class="page-header">
+                <button onclick="showPage('driver-dashboard')" class="btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Driver Verification</h2>
+            </div>
+
+            <!-- Verification Status -->
+            <div class="verification-status" id="verification-status">
+                <div class="status-pending">
+                    <div class="status-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Verification Required</h3>
+                    <p>Complete your driver verification to start offering rides</p>
+                </div>
+            </div>
+
+            <!-- Verification Steps -->
+            <div class="verification-steps">
+                <div class="step-card active" id="license-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-info">
+                            <h4>Driver's License</h4>
+                            <p>Upload a clear photo of your license</p>
+                        </div>
+                        <div class="step-status">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content">
+                        <form id="license-form" class="verification-form">
+                            <div class="form-group">
+                                <label>License Number</label>
+                                <input type="text" id="license-number" placeholder="Enter your license number" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>License Class</label>
+                                <select id="license-class" required>
+                                    <option value="">Select license class</option>
+                                    <option value="G">Class G (Full License)</option>
+                                    <option value="G2">Class G2 (Beginner)</option>
+                                    <option value="G1">Class G1 (Learner)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="date" id="license-expiry" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Upload License Photo <span class="scan-badge">Auto-scan</span></label>
+                                <div class="file-upload-area" id="license-upload">
+                                    <div class="upload-placeholder">
+                                        <i class="fas fa-camera"></i>
+                                        <p>Tap to upload license photo</p>
+                                        <small>JPG, PNG up to 5MB</small>
+                                    </div>
+                                    <input type="file" id="license-file" accept="image/*" hidden>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="step-card" id="vehicle-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-info">
+                            <h4>Vehicle Information <span class="optional-badge">Optional</span></h4>
+                            <p>Tell us about your vehicle (can be added later)</p>
+                        </div>
+                        <div class="step-status">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content">
+                        <form id="vehicle-form" class="verification-form">
+                            <div class="optional-form-notice">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Vehicle information is optional. You can skip this step and add your vehicle details later to start offering rides.</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Vehicle Make & Model</label>
+                                <input type="text" id="vehicle-model" placeholder="e.g., Honda Civic">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Vehicle Color</label>
+                                <input type="text" id="vehicle-color" placeholder="e.g., Silver">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>License Plate</label>
+                                <input type="text" id="license-plate" placeholder="Enter license plate">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Number of Seats Available</label>
+                                <select id="seat-count">
+                                    <option value="">Select seats (optional)</option>
+                                    <option value="1">1 seat</option>
+                                    <option value="2">2 seats</option>
+                                    <option value="3">3 seats</option>
+                                    <option value="4">4 seats</option>
+                                    <option value="5">5+ seats</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="step-card" id="banking-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-info">
+                            <h4>Banking Information <span class="optional-badge">Optional</span></h4>
+                            <p>Setup payment processing (can be added later)</p>
+                        </div>
+                        <div class="step-status">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content">
+                        <form id="banking-form" class="verification-form">
+                            <div class="optional-form-notice">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Banking information is optional. You can skip this step and add payment details later to receive earnings.</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Account Holder Name</label>
+                                <input type="text" id="account-name" placeholder="Full name on account">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Bank Name</label>
+                                <input type="text" id="bank-name" placeholder="e.g., TD Canada Trust">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Account Number</label>
+                                <input type="text" id="account-number" placeholder="Enter account number">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Routing Number</label>
+                                <input type="text" id="routing-number" placeholder="Enter routing number" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Upload Void Cheque <span class="scan-badge">Auto-scan</span></label>
+                                <div class="file-upload-area" id="cheque-upload">
+                                    <div class="upload-placeholder">
+                                        <i class="fas fa-file-alt"></i>
+                                        <p>Tap to upload void cheque</p>
+                                        <small>PDF, JPG, PNG up to 5MB</small>
+                                    </div>
+                                    <input type="file" id="cheque-file" accept="image/*,.pdf" hidden>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="verification-actions">
+                <button id="save-progress-btn" class="btn-secondary" onclick="saveVerificationProgress()">
+                    <i class="fas fa-save"></i>
+                    Save Progress
+                </button>
+                <button id="submit-verification-btn" class="btn-primary" onclick="submitVerification()" disabled>
+                    <i class="fas fa-check"></i>
+                    Submit for Review
+                </button>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="verification-notes">
+                <div class="note-card">
+                    <div class="note-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="note-content">
+                        <h5>Important Requirements</h5>
+                        <ul>
+                            <li>Driver's license must be valid and not expired</li>
+                            <li>Vehicle must be registered and insured</li>
+                            <li>Bank account must be in your name</li>
+                            <li>All documents must be clear and readable</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="note-content">
+                        <h5>Verification Timeline</h5>
+                        <p>Your verification will typically be reviewed within 1-2 business days. You'll receive an email notification once approved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Rate Your Trip</h3>
+                <button class="modal-close" onclick="app.closeReviewModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="driver-info">
+                    <div class="driver-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="driver-details">
+                        <h4 id="review-driver-name">Driver Name</h4>
+                        <p id="review-trip-details">Trip details</p>
+                    </div>
+                </div>
+                
+                <div class="rating-section">
+                    <h4>How was your trip?</h4>
+                    <div class="star-rating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                </div>
+                
+                <div class="license-verification-section">
+                    <h4>Driver License Verification</h4>
+                    <p class="verification-note">To ensure platform safety, please verify the driver's license matches the registered information.</p>
+                    
+                    <div class="license-check">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="license-verified" required>
+                            <span class="checkmark"></span>
+                            Driver showed valid license matching registered name
+                        </label>
+                    </div>
+                    
+                    <div class="license-upload-option">
+                        <p class="upload-label">Optional: Upload photo of driver's license for verification</p>
+                        <div class="license-upload-area" onclick="document.getElementById('license-photo').click()">
+                            <i class="fas fa-camera"></i>
+                            <span>Tap to take photo</span>
+                        </div>
+                        <input type="file" id="license-photo" accept="image/*" capture="environment" style="display: none;">
+                        <div id="license-preview" class="license-preview-area" style="display: none;"></div>
+                    </div>
+                </div>
+                
+                <div class="comment-section">
+                    <h4>Comments (Optional)</h4>
+                    <textarea id="review-comment" placeholder="Share details about your experience..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="app.closeReviewModal()">Cancel</button>
+                <button class="btn-primary" onclick="app.submitReview()" id="submit-review-btn" disabled>Submit Review</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>    <!-- Verification Success Page -->
+    <div id="verification-success" class="page">
+        <div class="mobile-screen">
+            <div class="page-content full-center">
+                <div class="success-animation">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Verification Submitted!</h2>
+                <p class="success-message">Your verification information has been submitted successfully and is under review.</p>
+                <p class="success-detail">We'll notify you once your account is verified, typically within 24-48 hours.</p>
+                
+                <div class="verification-details">
+                    <div class="verification-detail-item">
+                        <i class="fas fa-id-card"></i>
+                        <div>
+                            <h4>License Verified</h4>
+                            <p>Your license has been verified with government records</p>
+                        </div>
+                    </div>
+                    
+                    <div class="verification-detail-item">
+                        <i class="fas fa-car"></i>
+                        <div>
+                            <h4>Vehicle Information</h4>
+                            <p>Vehicle details submitted successfully</p>
+                        </div>
+                    </div>
+                    
+                    <div class="verification-detail-item">
+                        <i class="fas fa-university"></i>
+                        <div>
+                            <h4>Banking Information</h4>
+                            <p>Payment processing setup complete</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-primary btn-large" onclick="app.showPage('driver-dashboard')">Return to Dashboard</button>
+            </div>
+        </div>
+    </div>

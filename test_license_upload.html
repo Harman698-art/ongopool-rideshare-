@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test License Upload - OnGoPool</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="mobile-screen">
+        <div class="page-header">
+            <h2>Test License Upload</h2>
+        </div>
+        
+        <div class="page-content">
+            <div class="step-card active">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-info">
+                        <h4>License Information</h4>
+                        <p>Upload your driver's license</p>
+                    </div>
+                </div>
+                
+                <div class="step-content">
+                    <form id="license-form" class="verification-form">
+                        <div class="form-group">
+                            <label>Upload License Photo</label>
+                            <div class="file-upload-area" id="license-upload">
+                                <div class="upload-placeholder">
+                                    <i class="fas fa-camera"></i>
+                                    <p>Tap to upload license photo</p>
+                                    <small>JPG, PNG up to 5MB</small>
+                                </div>
+                                <input type="file" id="license-file" accept="image/*" hidden>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Upload Banking Document</label>
+                            <div class="file-upload-area" id="cheque-upload">
+                                <div class="upload-placeholder">
+                                    <i class="fas fa-file-alt"></i>
+                                    <p>Tap to upload void cheque</p>
+                                    <small>PDF, JPG, PNG up to 5MB</small>
+                                </div>
+                                <input type="file" id="cheque-file" accept="image/*,.pdf" hidden>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification container -->
+    <div id="toast-container"></div>
+
+    <!-- Include app scripts -->
+    <script src="js/app.js"></script>
+    <script>
+        // Initialize minimal app for testing uploads
+        class UploadTest {
+            constructor() {
+                this.uploadedFiles = {};
+                this.init();
+            }
+            
+            init() {
+                this.setupFileUploads();
+            }
+            
+            setupFileUploads() {
+                // Setup license file upload
+                const licenseUploadArea = document.getElementById('license-upload');
+                const licenseFileInput = document.getElementById('license-file');
+                
+                if (licenseUploadArea && licenseFileInput) {
+                    licenseUploadArea.addEventListener('click', () => {
+                        licenseFileInput.click();
+                    });
+                    
+                    licenseFileInput.addEventListener('change', (e) => {
+                        this.handleFileUpload(e, 'license');
+                    });
+                }
+                
+                // Setup cheque file upload
+                const chequeUploadArea = document.getElementById('cheque-upload');
+                const chequeFileInput = document.getElementById('cheque-file');
+                
+                if (chequeUploadArea && chequeFileInput) {
+                    chequeUploadArea.addEventListener('click', () => {
+                        chequeFileInput.click();
+                    });
+                    
+                    chequeFileInput.addEventListener('change', (e) => {
+                        this.handleFileUpload(e, 'cheque');
+                    });
+                }
+            }
+
+            handleFileUpload(event, uploadType) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                // Validate file type
+                if (!file.type.startsWith('image/') && !file.type.includes('pdf')) {
+                    this.showToast('Please select an image file (JPG, PNG) or PDF', 'error');
+                    return;
+                }
+                
+                // Validate file size (5MB limit)
+                const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+                if (file.size > maxSize) {
+                    this.showToast('File size must be less than 5MB', 'error');
+                    return;
+                }
+                
+                // Update the upload area UI
+                const uploadArea = document.getElementById(`${uploadType}-upload`);
+                if (uploadArea) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        // Create preview element
+                        const preview = document.createElement('div');
+                        preview.className = 'upload-preview';
+                        
+                        let previewContent = '';
+                        if (file.type.startsWith('image/')) {
+                            previewContent = `<img src="${e.target.result}" alt="${uploadType} preview" style="max-width: 100%; max-height: 200px; object-fit: contain;">`;
+                        } else {
+                            previewContent = `<div style="padding: 20px; text-align: center;"><i class="fas fa-file-pdf" style="font-size: 48px; color: #dc2626;"></i></div>`;
+                        }
+                        
+                        preview.innerHTML = `
+                            ${previewContent}
+                            <div class="upload-info">
+                                <p><i class="fas fa-check-circle" style="color: #10b981;"></i> ${file.name}</p>
+                                <small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                                <button type="button" class="btn-remove-file" onclick="uploadTest.removeUploadedFile('${uploadType}')">
+                                    <i class="fas fa-times"></i> Remove
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Replace the placeholder with preview
+                        uploadArea.innerHTML = '';
+                        uploadArea.appendChild(preview);
+                        
+                        // Store the file data for later submission
+                        this.uploadedFiles[uploadType] = {
+                            file: file,
+                            dataUrl: e.target.result
+                        };
+                        
+                        this.showToast(`${uploadType === 'license' ? 'License' : 'Banking document'} uploaded successfully!`, 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            removeUploadedFile(uploadType) {
+                const uploadArea = document.getElementById(`${uploadType}-upload`);
+                if (uploadArea) {
+                    // Reset to original placeholder
+                    uploadArea.innerHTML = `
+                        <div class="upload-placeholder">
+                            <i class="fas fa-${uploadType === 'license' ? 'camera' : 'file-alt'}"></i>
+                            <p>Tap to upload ${uploadType === 'license' ? 'license photo' : 'void cheque'}</p>
+                            <small>${uploadType === 'license' ? 'JPG, PNG' : 'PDF, JPG, PNG'} up to 5MB</small>
+                        </div>
+                    `;
+                    
+                    // Clear the file input
+                    const fileInput = document.getElementById(`${uploadType}-file`);
+                    if (fileInput) {
+                        fileInput.value = '';
+                    }
+                    
+                    // Remove from stored files
+                    if (this.uploadedFiles[uploadType]) {
+                        delete this.uploadedFiles[uploadType];
+                    }
+                    
+                    this.showToast(`${uploadType === 'license' ? 'License' : 'Banking document'} removed`, 'info');
+                }
+            }
+            
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                toast.innerHTML = `
+                    <div class="toast-content">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                const container = document.getElementById('toast-container') || document.body;
+                container.appendChild(toast);
+                
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 3000);
+            }
+        }
+        
+        // Initialize the upload test
+        const uploadTest = new UploadTest();
+    </script>
+</body>
+</html>

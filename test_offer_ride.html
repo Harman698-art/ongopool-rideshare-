@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Offer Ride - OnGoPool</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/new-pages-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Offer Ride Screen -->
+        <div id="offer-ride-page" class="page active">
+            <div class="mobile-screen">
+                <div class="page-header">
+                    <button onclick="goToDashboard()" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2>Offer a Ride</h2>
+                </div>
+                
+                <div class="offer-ride-form">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Route Information</h3>
+                        
+                        <div class="location-inputs">
+                            <div class="input-group">
+                                <div class="location-icon from">
+                                    <i class="fas fa-circle"></i>
+                                </div>
+                                <input type="text" placeholder="Enter full pickup address" id="driver-pickup-input" class="location-autocomplete" autocomplete="off">
+                                <div class="autocomplete-suggestions" id="driver-pickup-suggestions"></div>
+                            </div>
+                            
+                            <div class="location-swap">
+                                <button type="button">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="input-group">
+                                <div class="location-icon to">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <input type="text" placeholder="Enter full destination address" id="driver-destination-input" class="location-autocomplete" autocomplete="off">
+                                <div class="autocomplete-suggestions" id="driver-destination-suggestions"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stops Section -->
+                        <div class="stops-section">
+                            <div class="stops-header">
+                                <h4>Add Stops <span class="optional-label">(Optional)</span></h4>
+                                <p class="stops-description">Add intermediate stops for passenger pick-up and drop-off</p>
+                            </div>
+                            <div id="stops-container" class="stops-container">
+                                <!-- Stops will be added dynamically -->
+                            </div>
+                            <button type="button" class="btn-add-stop" id="add-stop-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Stop
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="form-section-title">Trip Details</h3>
+                        
+                        <div class="trip-details">
+                            <div class="detail-item">
+                                <label>Date</label>
+                                <input type="date" id="driver-travel-date">
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Time</label>
+                                <div class="time-selector">
+                                    <select id="driver-travel-hour">
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9" selected>9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <span>:</span>
+                                    <select id="driver-travel-minute">
+                                        <option value="00" selected>00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                    <select id="driver-travel-ampm">
+                                        <option value="AM" selected>AM</option>
+                                        <option value="PM">PM</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Available Seats</label>
+                                <select id="available-seats">
+                                    <option value="1">1 seat</option>
+                                    <option value="2">2 seats</option>
+                                    <option value="3">3 seats</option>
+                                    <option value="4">4 seats</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="form-section-title">Route & Pricing</h3>
+                        
+                        <div class="route-info" id="route-info" style="display: none;">
+                            <div class="route-summary">
+                                <div class="route-detail">
+                                    <i class="fas fa-route"></i>
+                                    <span id="route-distance">-- km</span>
+                                </div>
+                                <div class="route-detail">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="route-duration">-- min</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pricing-inputs">
+                            <button type="button" class="btn-calculate-route" id="calculate-route-btn">
+                                <i class="fas fa-calculator"></i>
+                                Calculate Route & Price
+                            </button>
+                            
+                            <div class="price-slider-container" id="price-slider-container" style="display: block;">
+                                <div class="price-header">
+                                    <label>Price per seat</label>
+                                    <div class="price-display">
+                                        <span class="currency-symbol">$</span>
+                                        <span class="price-value" id="current-price">25.00</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="price-slider">
+                                    <input type="range" id="price-range-slider" min="5" max="50" value="25" step="0.25" class="slider">
+                                    <div class="price-range-labels">
+                                        <span class="min-label" id="min-price-label">$5.00</span>
+                                        <span class="max-label" id="max-price-label">$50.00</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="earnings-breakdown" id="earnings-breakdown">
+                                    <div class="earnings-item">
+                                        <span class="label">Total passenger payment:</span>
+                                        <span class="value" id="total-passenger-payment">$25.00</span>
+                                    </div>
+                                    <div class="earnings-item service-charge">
+                                        <span class="label">Service charge (15%):</span>
+                                        <span class="value" id="service-charge">$3.75</span>
+                                    </div>
+                                    <div class="earnings-item driver-earnings">
+                                        <span class="label">Your earnings:</span>
+                                        <span class="value" id="driver-earnings">$21.25</span>
+                                    </div>
+                                </div>
+                                
+                                <p class="price-note" id="price-breakdown">Price based on distance and available seats</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-primary btn-offer-ride">
+                        <i class="fas fa-plus-circle"></i>
+                        Post Ride
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

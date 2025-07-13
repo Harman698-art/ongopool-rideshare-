@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnGoPool - Test Signup Flow</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Test Signup Flow
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Testing complete user registration with Supabase backend
+            </p>
+        </div>
+
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+            <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                <form id="test-signup-form" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input id="test-name" type="text" value="Alex Driver" 
+                               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Email</label>
+                        <input id="test-email" type="email" value="alex.driver@test.com" 
+                               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Phone</label>
+                        <input id="test-phone" type="tel" value="+1-416-555-0123" 
+                               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Password</label>
+                        <input id="test-password" type="password" value="TestPassword123!" 
+                               class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">I want to</label>
+                        <select id="test-role" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-green-500 focus:border-green-500">
+                            <option value="passenger">Find rides (Passenger)</option>
+                            <option value="driver" selected>Offer rides (Driver)</option>
+                            <option value="both">Both offer and find rides</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input id="test-terms" type="checkbox" checked 
+                               class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                        <label for="test-terms" class="ml-2 block text-sm text-gray-900">
+                            I agree to the Terms & Conditions and Privacy Policy
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Create Test Account
+                    </button>
+                </form>
+
+                <div id="test-results" class="mt-6 hidden">
+                    <div class="rounded-md bg-green-50 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-green-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-green-800">Account Created Successfully!</h3>
+                                <div class="mt-2 text-sm text-green-700">
+                                    <p>User ID: <span id="user-id"></span></p>
+                                    <p>Email: <span id="user-email"></span></p>
+                                    <p>Role: <span id="user-role"></span></p>
+                                </div>
+                                <div class="mt-4">
+                                    <button onclick="testLogin()" class="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">
+                                        Test Login
+                                    </button>
+                                    <button onclick="testDashboard()" class="ml-2 bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">
+                                        Go to Dashboard
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="test-error" class="mt-6 hidden">
+                    <div class="rounded-md bg-red-50 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">Error Creating Account</h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <p id="error-message"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button onclick="testFullWorkflow()" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+                        Run Complete Test Workflow
+                    </button>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <a href="index.html" class="text-green-600 hover:text-green-500">← Back to Main App</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/rides.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/payments.js"></script>
+
+    <script>
+        // Test signup functionality
+        document.getElementById('test-signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('test-name').value;
+            const email = document.getElementById('test-email').value;
+            const phone = document.getElementById('test-phone').value;
+            const password = document.getElementById('test-password').value;
+            const role = document.getElementById('test-role').value;
+            
+            try {
+                console.log('Testing signup with:', { name, email, phone, role });
+                
+                const result = await window.authManager.signUp({
+                    name,
+                    email,
+                    phone,
+                    password,
+                    role
+                });
+                
+                if (result.user) {
+                    document.getElementById('test-results').classList.remove('hidden');
+                    document.getElementById('test-error').classList.add('hidden');
+                    document.getElementById('user-id').textContent = result.user.id;
+                    document.getElementById('user-email').textContent = result.user.email;
+                    document.getElementById('user-role').textContent = result.user.role;
+                    
+                    console.log('Signup successful:', result.user);
+                } else {
+                    throw new Error(result.error || 'Unknown signup error');
+                }
+            } catch (error) {
+                console.error('Signup failed:', error);
+                document.getElementById('test-error').classList.remove('hidden');
+                document.getElementById('test-results').classList.add('hidden');
+                document.getElementById('error-message').textContent = error.message;
+            }
+        });
+
+        async function testLogin() {
+            const email = document.getElementById('test-email').value;
+            const password = document.getElementById('test-password').value;
+            
+            try {
+                const result = await window.authManager.signIn(email, password);
+                if (result.user) {
+                    alert('Login successful! User: ' + result.user.name);
+                    console.log('Login successful:', result.user);
+                } else {
+                    alert('Login failed: ' + result.error);
+                }
+            } catch (error) {
+                alert('Login error: ' + error.message);
+                console.error('Login error:', error);
+            }
+        }
+
+        function testDashboard() {
+            window.location.href = 'index.html#dashboard';
+        }
+
+        async function testFullWorkflow() {
+            console.log('Starting full test workflow...');
+            
+            // Test 1: Signup
+            console.log('Test 1: Creating account...');
+            document.getElementById('test-signup-form').dispatchEvent(new Event('submit'));
+            
+            // Wait for signup to complete
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            // Test 2: Login
+            console.log('Test 2: Testing login...');
+            await testLogin();
+            
+            // Test 3: Create a ride
+            console.log('Test 3: Testing ride creation...');
+            if (window.ridesManager) {
+                try {
+                    const rideData = {
+                        driverId: window.authManager.user?.id,
+                        driver: window.authManager.user,
+                        pickup: 'Toronto, ON',
+                        destination: 'Ottawa, ON',
+                        date: '2025-07-15',
+                        time: '09:00',
+                        availableSeats: 3,
+                        pricePerKm: 0.20,
+                        description: 'Test ride for workflow testing'
+                    };
+                    
+                    const rideResult = await window.ridesManager.postRide(rideData);
+                    if (rideResult.ride) {
+                        console.log('Ride created successfully:', rideResult.ride);
+                        alert('Full workflow test completed successfully!');
+                    } else {
+                        console.error('Ride creation failed:', rideResult.error);
+                    }
+                } catch (error) {
+                    console.error('Ride creation error:', error);
+                }
+            }
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            console.log('Test page loaded, ready for testing');
+            if (window.supabaseService?.isConfigured) {
+                console.log('Supabase is configured and ready');
+            } else {
+                console.warn('Supabase not configured, using mock mode');
+            }
+        });
+    </script>
+</body>
+</html>

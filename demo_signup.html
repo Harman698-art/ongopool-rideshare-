@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        // Quick demo to test signup flow
+        setTimeout(() => {
+            // Fill out the form
+            document.getElementById('signup-name').value = 'John Driver';
+            document.getElementById('signup-email').value = 'john@example.com';
+            document.getElementById('signup-phone').value = '+1234567890';
+            document.getElementById('signup-password').value = 'password123';
+            document.getElementById('signup-role').value = 'both';
+            document.getElementById('terms-agreement').checked = true;
+            
+            // Submit the form
+            document.getElementById('signup-form').dispatchEvent(new Event('submit'));
+        }, 2000);
+        
+        window.location.href = 'index.html#signup';
+    </script>
+</head>
+<body>
+    Redirecting to signup...
+</body>
+</html>

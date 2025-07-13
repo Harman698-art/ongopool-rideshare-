@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnGoPool - Automated Test Workflow</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">OnGoPool Complete Test Suite</h1>
+        
+        <div class="max-w-4xl mx-auto">
+            <div id="test-console" class="bg-black text-green-400 p-4 rounded-lg mb-6 h-96 overflow-y-auto font-mono text-sm">
+                <div class="mb-2">OnGoPool Test Console - Starting automated test workflow...</div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <button onclick="runSignupTest()" class="bg-blue-600 text-white p-4 rounded hover:bg-blue-700">
+                    Test 1: Signup Flow
+                </button>
+                <button onclick="runLoginTest()" class="bg-green-600 text-white p-4 rounded hover:bg-green-700">
+                    Test 2: Login Flow
+                </button>
+                <button onclick="runRideCreationTest()" class="bg-purple-600 text-white p-4 rounded hover:bg-purple-700">
+                    Test 3: Ride Creation
+                </button>
+                <button onclick="runRideSearchTest()" class="bg-yellow-600 text-white p-4 rounded hover:bg-yellow-700">
+                    Test 4: Ride Search
+                </button>
+                <button onclick="runRideRequestTest()" class="bg-red-600 text-white p-4 rounded hover:bg-red-700">
+                    Test 5: Ride Requests
+                </button>
+                <button onclick="runDashboardTest()" class="bg-indigo-600 text-white p-4 rounded hover:bg-indigo-700">
+                    Test 6: Dashboard
+                </button>
+            </div>
+            
+            <div class="text-center">
+                <button onclick="runAllTests()" class="bg-gray-800 text-white px-8 py-4 rounded-lg text-lg hover:bg-gray-900">
+                    🚀 Run Complete Test Suite
+                </button>
+            </div>
+            
+            <div id="test-results" class="mt-8 hidden">
+                <h2 class="text-2xl font-bold mb-4">Test Results Summary</h2>
+                <div id="results-content" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/rides.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/payments.js"></script>
+
+    <script>
+        let testResults = [];
+        let consoleEl = document.getElementById('test-console');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = {
+                'info': 'text-green-400',
+                'success': 'text-green-300',
+                'error': 'text-red-400',
+                'warning': 'text-yellow-400'
+            }[type];
+            
+            consoleEl.innerHTML += `<div class="${color}">[${timestamp}] ${message}</div>`;
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+            console.log(`[TEST] ${message}`);
+        }
+        
+        function addResult(testName, status, details = '') {
+            testResults.push({ testName, status, details, timestamp: new Date() });
+            updateResultsDisplay();
+        }
+        
+        function updateResultsDisplay() {
+            const resultsEl = document.getElementById('results-content');
+            resultsEl.innerHTML = testResults.map(result => `
+                <div class="border rounded p-4 ${result.status === 'PASS' ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold">${result.testName}</h3>
+                        <span class="px-2 py-1 rounded text-sm ${result.status === 'PASS' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}">
+                            ${result.status}
+                        </span>
+                    </div>
+                    ${result.details ? `<p class="text-sm text-gray-600 mt-2">${result.details}</p>` : ''}
+                </div>
+            `).join('');
+            
+            document.getElementById('test-results').classList.remove('hidden');
+        }
+        
+        async function runSignupTest() {
+            log('🧪 Starting Signup Test...', 'info');
+            
+            try {
+                const userData = {
+                    name: 'Test User ' + Date.now(),
+                    email: `testuser${Date.now()}@ongopool.test`,
+                    phone: '+1-555-' + Math.floor(Math.random() * 10000).toString().padStart(4, '0'),
+                    password: 'TestPassword123!',
+                    role: 'driver'
+                };
+                
+                log(`Creating user: ${userData.email}`, 'info');
+                const result = await window.authManager.signUp(userData);
+                
+                if (result.user) {
+                    log('✅ Signup successful!', 'success');
+                    log(`User ID: ${result.user.id}`, 'info');
+                    addResult('User Signup', 'PASS', `Created user: ${userData.email}`);
+                    return { success: true, user: result.user, credentials: userData };
+                } else {
+                    throw new Error(result.error || 'Unknown signup error');
+                }
+            } catch (error) {
+                log(`❌ Signup failed: ${error.message}`, 'error');
+                addResult('User Signup', 'FAIL', error.message);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        async function runLoginTest(credentials = null) {
+            log('🔐 Starting Login Test...', 'info');
+            
+            try {
+                if (!credentials) {
+                    // Use default test credentials
+                    credentials = {
+                        email: 'alex.driver@test.com',
+                        password: 'TestPassword123!'
+                    };
+                }
+                
+                log(`Logging in: ${credentials.email}`, 'info');
+                const result = await window.authManager.signIn(credentials.email, credentials.password);
+                
+                if (result.user) {
+                    log('✅ Login successful!', 'success');
+                    log(`Welcome: ${result.user.name}`, 'info');
+                    addResult('User Login', 'PASS', `Logged in as: ${result.user.name}`);
+                    return { success: true, user: result.user };
+                } else {
+                    throw new Error(result.error || 'Unknown login error');
+                }
+            } catch (error) {
+                log(`❌ Login failed: ${error.message}`, 'error');
+                addResult('User Login', 'FAIL', error.message);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        async function runRideCreationTest() {
+            log('🚗 Starting Ride Creation Test...', 'info');
+            
+            try {
+                if (!window.authManager.user) {
+                    log('⚠️ No user logged in, attempting login first...', 'warning');
+                    const loginResult = await runLoginTest();
+                    if (!loginResult.success) {
+                        throw new Error('Must be logged in to create rides');
+                    }
+                }
+                
+                const rideData = {
+                    driverId: window.authManager.user.id,
+                    driver: window.authManager.user,
+                    pickup: 'Toronto, ON, Canada',
+                    destination: 'Ottawa, ON, Canada',
+                    date: '2025-07-15',
+                    time: '09:00',
+                    availableSeats: 3,
+                    pricePerKm: 0.20,
+                    description: 'Test ride created by automated testing'
+                };
+                
+                log(`Creating ride: ${rideData.pickup} → ${rideData.destination}`, 'info');
+                const result = await window.ridesManager.postRide(rideData);
+                
+                if (result.ride) {
+                    log('✅ Ride created successfully!', 'success');
+                    log(`Ride ID: ${result.ride.id}`, 'info');
+                    addResult('Ride Creation', 'PASS', `${rideData.pickup} → ${rideData.destination}`);
+                    return { success: true, ride: result.ride };
+                } else {
+                    throw new Error(result.error || 'Unknown ride creation error');
+                }
+            } catch (error) {
+                log(`❌ Ride creation failed: ${error.message}`, 'error');
+                addResult('Ride Creation', 'FAIL', error.message);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        async function runRideSearchTest() {
+            log('🔍 Starting Ride Search Test...', 'info');
+            
+            try {
+                const searchParams = {
+                    pickup: 'Toronto, ON',
+                    destination: 'Ottawa, ON',
+                    date: '2025-07-15',
+                    passengers: 1
+                };
+                
+                log(`Searching rides: ${searchParams.pickup} → ${searchParams.destination}`, 'info');
+                const result = await window.ridesManager.searchRides(searchParams);
+                
+                if (result.rides !== undefined) {
+                    log(`✅ Search completed! Found ${result.rides.length} rides`, 'success');
+                    addResult('Ride Search', 'PASS', `Found ${result.rides.length} available rides`);
+                    return { success: true, rides: result.rides };
+                } else {
+                    throw new Error(result.error || 'Unknown search error');
+                }
+            } catch (error) {
+                log(`❌ Ride search failed: ${error.message}`, 'error');
+                addResult('Ride Search', 'FAIL', error.message);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        async function runRideRequestTest() {
+            log('📋 Starting Ride Request Test...', 'info');
+            
+            try {
+                // First search for available rides
+                const searchResult = await runRideSearchTest();
+                if (!searchResult.success || searchResult.rides.length === 0) {
+                    throw new Error('No rides available to request');
+                }
+                
+                const ride = searchResult.rides[0];
+                log(`Requesting ride: ${ride.id}`, 'info');
+                
+                // Create a test passenger request
+                const result = await window.ridesManager.requestRide(
+                    ride.id,
+                    'test-passenger-' + Date.now(),
+                    'Test ride request from automated testing'
+                );
+                
+                if (result.success !== false) {
+                    log('✅ Ride request submitted!', 'success');
+                    addResult('Ride Request', 'PASS', `Requested ride ${ride.id}`);
+                    return { success: true, request: result };
+                } else {
+                    throw new Error(result.error || 'Unknown request error');
+                }
+            } catch (error) {
+                log(`❌ Ride request failed: ${error.message}`, 'error');
+                addResult('Ride Request', 'FAIL', error.message);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        async function runDashboardTest() {
+            log('📊 Starting Dashboard Test...', 'info');
+            
+            try {
+                if (!window.authManager.user) {
+                    throw new Error('Must be logged in to test dashboard');
+                }
+                
+                log('Testing dashboard navigation...', 'info');
+                
+                // Test role permissions
+                const permissions = window.authManager.user.permissions || [];
+                log(`User permissions: ${permissions.join(', ')}`, 'info');
+                
+                // Test accessible features
+                const features = window.authManager.getAccessibleFeatures();
+                log(`Accessible features: ${features.join(', ')}`, 'info');
+                
+                log('✅ Dashboard test completed!', 'success');
+                addResult('Dashboard Navigation', 'PASS', `${features.length} features accessible`);
+                return { success: true, features };
+            } catch (error) {
+                log(`❌ Dashboard test failed: ${error.message}`, 'error');
+                addResult('Dashboard Navigation', 'FAIL', error.message);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        async function runAllTests() {
+            log('🚀 Starting Complete Test Suite...', 'info');
+            testResults = []; // Reset results
+            
+            const startTime = Date.now();
+            
+            // Test 1: Signup
+            const signupResult = await runSignupTest();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Test 2: Login (use credentials from signup if available)
+            const loginResult = await runLoginTest(signupResult.credentials);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Test 3: Ride Creation
+            const rideResult = await runRideCreationTest();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Test 4: Ride Search
+            const searchResult = await runRideSearchTest();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Test 5: Ride Request
+            const requestResult = await runRideRequestTest();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Test 6: Dashboard
+            const dashboardResult = await runDashboardTest();
+            
+            const endTime = Date.now();
+            const duration = (endTime - startTime) / 1000;
+            
+            const passedTests = testResults.filter(r => r.status === 'PASS').length;
+            const totalTests = testResults.length;
+            
+            log(`🏁 Test Suite Completed in ${duration}s`, 'info');
+            log(`📊 Results: ${passedTests}/${totalTests} tests passed`, passedTests === totalTests ? 'success' : 'warning');
+            
+            if (passedTests === totalTests) {
+                log('🎉 All tests passed! OnGoPool is working correctly.', 'success');
+            } else {
+                log('⚠️ Some tests failed. Review the results above.', 'warning');
+            }
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            log('OnGoPool Test Suite initialized', 'info');
+            log('Supabase configured: ' + (window.supabaseService?.isConfigured ? 'Yes' : 'No'), 'info');
+            log('Ready to run tests!', 'success');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnGoPool - App Store Promotional Materials</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            color: #10b981;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.125rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: #0f172a;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .badge-item {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .badge-item:hover {
+            border-color: #10b981;
+            transform: translateY(-2px);
+        }
+
+        .badge-img {
+            width: 100%;
+            max-width: 160px;
+            height: auto;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .badge-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-description {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .app-mockup {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .mockup-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #10b981;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: #10b981;
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .download-section {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .download-section h2 {
+            color: white;
+        }
+
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .download-btn i {
+            font-size: 1.25rem;
+        }
+
+        .qr-code {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            display: inline-block;
+            margin: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .download-btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-car"></i> OnGoPool</h1>
+            <p>Promotional materials and app store assets for the leading rideshare platform connecting drivers and passengers across Canada.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-store"></i> App Store Badges</h2>
+            <div class="badges-grid">
+                <div class="badge-item">
+                    <img src="https://public.youware.com/users-website-assets/prod/9091fe4b-0fde-4e87-88d0-0e67f689ffd2/7927befc041a43afa921474918f77eac.png" alt="App Store Badges" class="badge-img">
+                    <div class="badge-title">Official Store Badges</div>
+                    <div class="badge-description">Apple App Store and Google Play Store download badges in multiple languages</div>
+                </div>
+                <div class="badge-item">
+                    <div class="feature-icon" style="margin: 0 auto 1rem auto;">
+                        <i class="fab fa-apple"></i>
+                    </div>
+                    <div class="badge-title">iOS App Store</div>
+                    <div class="badge-description">Optimized for iPhone and iPad with native iOS design patterns</div>
+                </div>
+                <div class="badge-item">
+                    <div class="feature-icon" style="margin: 0 auto 1rem auto;">
+                        <i class="fab fa-google-play"></i>
+                    </div>
+                    <div class="badge-title">Google Play Store</div>
+                    <div class="badge-description">Android-optimized with Material Design components</div>
+                </div>
+                <div class="badge-item">
+                    <div class="feature-icon" style="margin: 0 auto 1rem auto;">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="badge-title">Progressive Web App</div>
+                    <div class="badge-description">Install directly from any modern web browser</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-star"></i> Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-title">Safe & Verified</div>
+                    <div class="feature-description">All drivers are background-checked and verified for your safety and peace of mind.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="feature-title">Save Money</div>
+                    <div class="feature-description">Save up to 50% on transportation costs by sharing rides with fellow travelers.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="feature-title">Real-time Tracking</div>
+                    <div class="feature-description">Live GPS tracking and estimated arrival times for complete transparency.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="feature-title">Secure Payments</div>
+                    <div class="feature-description">Integrated payment system with support for multiple payment methods.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section download-section">
+            <h2><i class="fas fa-download"></i> Get OnGoPool Now</h2>
+            <p>Join thousands of users who are already saving money and reducing their carbon footprint with OnGoPool.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">10K+</span>
+                    <span class="stat-label">Downloads</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.8</span>
+                    <span class="stat-label">Rating</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50%</span>
+                    <span class="stat-label">Savings</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Support</span>
+                </div>
+            </div>
+
+            <div class="download-buttons">
+                <a href="#" class="download-btn">
+                    <i class="fab fa-apple"></i>
+                    <span>Download for iOS</span>
+                </a>
+                <a href="#" class="download-btn">
+                    <i class="fab fa-google-play"></i>
+                    <span>Get it on Google Play</span>
+                </a>
+                <a href="#" class="download-btn">
+                    <i class="fas fa-globe"></i>
+                    <span>Open Web App</span>
+                </a>
+            </div>
+
+            <div class="qr-code">
+                <div style="text-align: center; padding: 2rem; color: #64748b;">
+                    <i class="fas fa-qrcode" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                    <div style="font-weight: 600; color: #0f172a;">Scan to Download</div>
+                    <div style="font-size: 0.875rem;">Point your camera here</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-info-circle"></i> About OnGoPool</h2>
+            <p>OnGoPool is Canada's leading rideshare platform that connects drivers and passengers for safe, affordable, and eco-friendly transportation. Our mission is to reduce traffic congestion and carbon emissions while making transportation more accessible for everyone.</p>
+            
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid #10b981;">
+                <strong>Perfect for:</strong> Daily commutes, airport transfers, weekend trips, event transportation, and eco-conscious travelers looking to reduce their carbon footprint.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
